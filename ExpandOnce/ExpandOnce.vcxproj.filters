@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="ExpandOnce.cpp" />
+    <ClCompile Include="GraphHelper.cpp" />
+    <ClCompile Include="Helpers\Helpers.cpp" />
+    <ClCompile Include="Helpers\Helpers.hpp" />
+    <ClCompile Include="Graph\CsrNode.cpp" />
+    <ClCompile Include="Config\GraphFilesConfig.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GraphHelper.hpp" />
+    <ClInclude Include="Graph\CsrNode.h" />
+    <ClInclude Include="Config\GraphFilesConfig.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\CLionProjects\graph_matching\graph1.adjlist" />
+    <None Include="..\..\..\..\CLionProjects\graph_matching\graph2.adjlist" />
+    <None Include="..\..\..\..\CLionProjects\graph_matching\noisy_set.list" />
+  </ItemGroup>
+</Project>
