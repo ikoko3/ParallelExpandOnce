@@ -1,16 +1,21 @@
 #pragma once
 #include <string>
+#include <iostream>
 
 using namespace std;
 
 class CsrNode 
 {
 public:
-	string Name;
+	CsrNode(string name);
+	CsrNode(string name, int index, int starts, int ends);
 
-	CsrNode(string name) {
-		Name = name;
-	}
-
+	void print();
+	int edges_count();
+private:
+	string name;
+	int index;
+	int starts;
+	int ends;
 };
 
