@@ -192,8 +192,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Config\GraphFilesConfig.cpp" />
-    <ClCompile Include="Graph\CsrGraph.cpp" />
-    <ClCompile Include="Graph\CsrNode.cpp" />
+    <ClCompile Include="Graph\Graph.cpp" />
+    <ClCompile Include="Graph\Node.cpp" />
     <ClCompile Include="ExpandOnce.cpp" />
     <ClCompile Include="Helpers\GraphHelper.cpp" />
     <ClCompile Include="Helpers\Helpers.cpp" />
@@ -201,8 +201,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config\GraphFilesConfig.hpp" />
-    <ClInclude Include="Graph\CsrGraph.h" />
-    <ClInclude Include="Graph\CsrNode.h" />
+    <ClInclude Include="Graph\Graph.h" />
+    <ClInclude Include="Graph\Node.h" />
     <ClInclude Include="Helpers\GraphHelper.hpp" />
   </ItemGroup>
   <ItemGroup>

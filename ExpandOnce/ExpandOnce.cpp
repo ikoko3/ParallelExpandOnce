@@ -10,7 +10,7 @@
 #include <utility>
 #include <fstream>
 #include <string>
-#include "Graph/CsrGraph.h"
+#include "Graph/Graph.h"
 #include "Helpers/GraphHelper.hpp"
 #include "Config/GraphFilesConfig.hpp"
 #include "tbb/task.h"
@@ -125,9 +125,16 @@ using namespace csr;
 
 int main() {
 
-	CsrGraph graph1 = gh::CreateGraphFromFile(GraphFilesConfig::get_graph_file_name(1), GraphFilesConfig::LINES_TO_SKIP);
-	CsrGraph graph2 = gh::CreateGraphFromFile(GraphFilesConfig::get_graph_file_name(2), GraphFilesConfig::LINES_TO_SKIP);
+	Graph* graph1 = gh::CreateGraphFromFile(GraphFilesConfig::get_graph_file_name(1), GraphFilesConfig::LINES_TO_SKIP);
+	Graph* graph2 = gh::CreateGraphFromFile(GraphFilesConfig::get_graph_file_name(2), GraphFilesConfig::LINES_TO_SKIP);
 
+	vector<int>* edges = graph1->getNeighboursFor(5);
+	for (auto const &edge : *edges) {
+		cout << edge << endl;
+	}
+
+	delete graph1;
+	delete graph2;
 
 	//parallel();
 }

@@ -8,7 +8,7 @@
 #include <vector>
 #include <deque>
 #include <string>
-#include "../Graph/CsrNode.h"
+#include "../Graph/Node.h"
 
 
 using namespace std;
@@ -17,15 +17,15 @@ using namespace csr;
 namespace gh
 {
 
-	csr::CsrGraph CreateGraphFromFile(string fileName, int skipLinesCount)
+	csr::Graph* CreateGraphFromFile(string fileName, int skipLinesCount)
 	{
 		std::cout << "Creating graph from file: " + fileName << endl;
 		fstream graphFile;
 		graphFile.open(fileName, ios::in);
 
-		vector<CsrNode*> csrNodes;
-		vector<string> csrEdges;
-		vector<deque<string>> edgesDeques;
+		vector<Node*> csrNodes;
+		vector<int> csrEdges;
+		vector<deque<int>> edgesDeques;
 
 		if (!graphFile) {
 			cout << "No such file";
@@ -46,14 +46,14 @@ namespace gh
 
 			//Split values to seperate strings
 			istringstream iss(tp);
-			deque<string> node_edges{ istream_iterator<string>{iss}, istream_iterator<string>{} };
+			deque<int> node_edges{ istream_iterator<int>{iss}, istream_iterator<int>{} };
 
 
-			string nodeName = node_edges[0];
+			int nodeName = node_edges.front();
 			node_edges.pop_front(); //Remove the first item because it is the node name
 			edgesDeques.push_back(node_edges);
 
-			csrNodes.insert(csrNodes.begin(), new CsrNode(nodeName, nodesCount++));
+			csrNodes.insert(csrNodes.begin(), new Node(to_string(nodeName), nodesCount++));
 		}
 		graphFile.close();
 
@@ -66,15 +66,16 @@ namespace gh
 
 
 			for (auto const& edge : node_edges) {
-				int edgeIndex = stoi(edge); // we can 
-				edgesDeques[edgeIndex].push_back(to_string(vectorIndex));
+				int edgeIndex = edge; // we know the index of the node is the name of the node
+				edgesDeques[edgeIndex].push_back(vectorIndex);
 			}
 			node->set_array_limits(edgesCount, edgesCount + node_edges.size() - 1);
 			edgesCount += node_edges.size();
 
 			csrEdges.insert(csrEdges.end(), node_edges.begin(), node_edges.end());
 		}
-		return csr::CsrGraph(csrNodes, csrEdges);
+		
+		return new csr::Graph(csrNodes, csrEdges);
 	}
 
 

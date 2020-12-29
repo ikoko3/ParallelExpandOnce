@@ -1,9 +1,9 @@
 #include <string>
-#include "../Graph/CsrGraph.h"
+#include "../Graph/Graph.h"
 
 using namespace std;
 
 namespace gh
 {
-	csr::CsrGraph CreateGraphFromFile(string fileName, int skipLinesCount = 0);
+	csr::Graph* CreateGraphFromFile(string fileName, int skipLinesCount = 0);
 }
