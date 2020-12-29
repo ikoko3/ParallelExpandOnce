@@ -1,28 +1,3 @@
-/*
-    ==============================================================
-
-    SAMPLE SOURCE CODE - SUBJECT TO THE TERMS OF SAMPLE CODE LICENSE AGREEMENT,
-    http://software.intel.com/en-us/articles/intel-sample-source-code-license-agreement/
-
-    Copyright 2005-2019 Intel Corporation
-
-    THIS FILE IS PROVIDED "AS IS" WITH NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT
-    NOT LIMITED TO ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-    PURPOSE, NON-INFRINGEMENT OF INTELLECTUAL PROPERTY RIGHTS.
-
-    =============================================================
-*/
-
-/* Example program that computes Fibonacci numbers in different ways.
-   Arguments are: [ Number [Threads [Repeats]]]
-   The defaults are Number=500 Threads=1:4 Repeats=1.
-
-   The point of this program is to check that the library is working properly.
-   Most of the computations are deliberately silly and not expected to
-   show any speedup on multiprocessors.
-*/
-
-// enable assertions
 #ifdef NDEBUG
 #undef NDEBUG
 #endif
@@ -35,7 +10,8 @@
 #include <utility>
 #include <fstream>
 #include <string>
-#include "Helpers/Helpers.hpp"
+#include "Graph/CsrGraph.h"
+#include "Helpers/GraphHelper.hpp"
 #include "Config/GraphFilesConfig.hpp"
 #include "tbb/task.h"
 #include "tbb/task_scheduler_init.h"
@@ -145,12 +121,13 @@ int parallel() {
 
 }
 
+using namespace csr;
 
 int main() {
 
-	gh::open_file_test(GraphFilesConfig::get_graph_file_name(1),GraphFilesConfig::LINES_TO_SKIP);
-	gh::open_file_test(GraphFilesConfig::get_graph_file_name(2),GraphFilesConfig::LINES_TO_SKIP);
-	
+	CsrGraph graph1 = gh::CreateGraphFromFile(GraphFilesConfig::get_graph_file_name(1), GraphFilesConfig::LINES_TO_SKIP);
+	CsrGraph graph2 = gh::CreateGraphFromFile(GraphFilesConfig::get_graph_file_name(2), GraphFilesConfig::LINES_TO_SKIP);
+
 
 	//parallel();
 }
