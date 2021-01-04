@@ -6,6 +6,7 @@
 
 #define GRAPH_FILE1 "graph1.adjlist"
 #define GRAPH_FILE2 "graph2.adjlist"
+#define NOISY_SET "noisy_set"
 
 using namespace std;
 
@@ -17,8 +18,8 @@ public:
 	const static int LINES_TO_SKIP = 3;
 
 
-	static string get_graph_file_name(int graph_no);
+	static string getGraphFileName(int graph_no);
 
-		
+	static string GetNoisySeedSetName();
 };
 

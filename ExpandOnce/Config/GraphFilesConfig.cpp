@@ -1,7 +1,7 @@
 #include <string>
 #include "GraphFilesConfig.hpp"
 
-string GraphFilesConfig::get_graph_file_name(int graph_no)
+string GraphFilesConfig::getGraphFileName(int graph_no)
 {
 	string file_name;
 	switch (graph_no) {
@@ -15,4 +15,9 @@ string GraphFilesConfig::get_graph_file_name(int graph_no)
 		throw new invalid_argument("Accepted values for graph file 1 or 2.\n");
 	}
 	return string(GRAPH_FILES_ROOT) + file_name;
+}
+
+string GraphFilesConfig::GetNoisySeedSetName()
+{
+	return string(GRAPH_FILES_ROOT) + string(NOISY_SET);
 }

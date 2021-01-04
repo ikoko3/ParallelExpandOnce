@@ -17,5 +17,8 @@ namespace csr {
 		vector<int> edges;
 	};
 
-
+	enum NodeGraph {
+		graph1 = 1,
+		graph2 = 2
+	};
 }

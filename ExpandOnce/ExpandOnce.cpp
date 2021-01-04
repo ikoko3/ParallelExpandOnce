@@ -10,6 +10,7 @@
 #include <utility>
 #include <fstream>
 #include <string>
+#include <chrono>
 #include "Graph/Graph.h"
 #include "Helpers/GraphHelper.hpp"
 #include "Config/GraphFilesConfig.hpp"
@@ -37,6 +38,7 @@ using namespace tbb;
 
 
 static const size_t N = 23;
+static const int threshold = 2;
 
 class SubStringFinder {
 
@@ -124,17 +126,27 @@ int parallel() {
 using namespace csr;
 
 int main() {
+	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+	cout << "Starting Expand Once with threshold " << threshold << endl;
 
-	Graph* graph1 = gh::CreateGraphFromFile(GraphFilesConfig::get_graph_file_name(1), GraphFilesConfig::LINES_TO_SKIP);
-	Graph* graph2 = gh::CreateGraphFromFile(GraphFilesConfig::get_graph_file_name(2), GraphFilesConfig::LINES_TO_SKIP);
+	Graph* graph1 = gh::CreateGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph1), GraphFilesConfig::LINES_TO_SKIP);
+	Graph* graph2 = gh::CreateGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph2), GraphFilesConfig::LINES_TO_SKIP);
+
+	SeedSet* set = gh::CreateSeedSetFromFile(GraphFilesConfig::GetNoisySeedSetName());
+	set->print();
+
+
 
 	vector<int>* edges = graph1->getNeighboursFor(5);
-	for (auto const &edge : *edges) {
+	/*for (auto const &edge : *edges) {
 		cout << edge << endl;
-	}
+	}*/
 
 	delete graph1;
 	delete graph2;
+
+	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+	std::cout << "Total time: " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
 
 	//parallel();
 }

@@ -198,12 +198,14 @@
     <ClCompile Include="Helpers\GraphHelper.cpp" />
     <ClCompile Include="Helpers\Helpers.cpp" />
     <ClCompile Include="Helpers\Helpers.hpp" />
+    <ClCompile Include="Graph\SeedSet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config\GraphFilesConfig.hpp" />
     <ClInclude Include="Graph\Graph.h" />
     <ClInclude Include="Graph\Node.h" />
     <ClInclude Include="Helpers\GraphHelper.hpp" />
+    <ClInclude Include="Graph\SeedSet.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\CLionProjects\graph_matching\graph1.adjlist" />

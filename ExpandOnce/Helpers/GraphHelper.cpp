@@ -16,25 +16,30 @@ using namespace csr;
 
 namespace gh
 {
+	fstream OpenFile(string fileName) {
+		fstream file;
+		file.open(fileName, ios::in);
+
+		if (!file) {
+			cout << "No such file";
+			throw (file);
+		}
+		if (!file.is_open()) {
+			cout << "File is not open";
+			throw (file);
+		}
+		return file;
+	}
 
 	csr::Graph* CreateGraphFromFile(string fileName, int skipLinesCount)
 	{
 		std::cout << "Creating graph from file: " + fileName << endl;
-		fstream graphFile;
-		graphFile.open(fileName, ios::in);
-
+	
 		vector<Node*> csrNodes;
 		vector<int> csrEdges;
 		vector<deque<int>> edgesDeques;
 
-		if (!graphFile) {
-			cout << "No such file";
-			throw (graphFile);
-		}
-		if (!graphFile.is_open()) {
-			cout << "File is not open";
-			throw (graphFile);
-		}
+		fstream graphFile = OpenFile(fileName);
 
 		int fileLine = 0;
 		int edgesCount = 0;
@@ -75,7 +80,28 @@ namespace gh
 			csrEdges.insert(csrEdges.end(), node_edges.begin(), node_edges.end());
 		}
 		
+		std::cout << "Created graph from file: " + fileName << endl;
 		return new csr::Graph(csrNodes, csrEdges);
+	}
+
+	csr::SeedSet * CreateSeedSetFromFile(string fileName)
+	{
+		fstream setFile = OpenFile(fileName);
+		deque<NodeSet> nodeSets;
+
+		string tp;
+		while (getline(setFile, tp)) {
+			//We know the format is node1 node2, so we split the values and create a new item on each row
+			istringstream iss(tp);
+			vector<string> matchedNodes{ istream_iterator<string>{iss}, istream_iterator<string>{} };
+			nodeSets.push_back(NodeSet(matchedNodes[0],matchedNodes[1]));
+
+			//cout << tp << endl;
+	
+		}
+		setFile.close();
+
+		return new SeedSet(nodeSets);
 	}
 
 
