@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <set>
 #include <vector>
 #include <deque>
 
@@ -28,10 +29,17 @@ namespace csr {
 	class SeedSet{
 	public:
 		SeedSet();
+		~SeedSet();
 		SeedSet(deque<NodeSet> nodeSets);
 		deque<NodeSet> getNodeSets();
+		set<int>* getNodesForGraph(int graph);
+		bool GraphContainsNode(int graph, int nodeId);
+
 		void print();
 	private:
+		void SeedSet::LoadNodesForGraph(int graph);
 		deque<NodeSet> NodeSets;
+		set<int>* graph1Nodes;
+		set<int>* graph2Nodes;
 	};
 }

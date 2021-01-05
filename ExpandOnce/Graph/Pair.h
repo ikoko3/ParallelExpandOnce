@@ -19,6 +19,8 @@ namespace csr {
 		PairMatchingScore(Pair* pair);
 		void Print();
 		void IncremenrScore();
+		int getScore();
+		Pair* getPair();
 	private:
 		Pair* pair;
 		int score;

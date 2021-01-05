@@ -1,4 +1,5 @@
 #include <string>
+#include <map>
 #include "../Graph/Graph.h"
 #include "../Graph/SeedSet.h"
 #include "../Graph/Pair.h"

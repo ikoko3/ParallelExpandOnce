@@ -26,6 +26,16 @@ void csr::PairMatchingScore::IncremenrScore()
 	score++;
 }
 
+int csr::PairMatchingScore::getScore()
+{
+	return score;
+}
+
+Pair * csr::PairMatchingScore::getPair()
+{
+	return pair;
+}
+
 string csr::Pair::getKey()
 {
 	return to_string(g1NodeId) + to_string(g2NodeId);

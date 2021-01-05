@@ -109,7 +109,7 @@ namespace gh
 
 	map<string, PairMatchingScore*> CreateNeighbouringPairs(SeedSet *set, Graph* g1, Graph* g2)
 	{
-		map<string,PairMatchingScore*> pairScores;
+		map<string, PairMatchingScore*> pairScores;
 
 		for (auto &nodeSet : set->getNodeSets()) {
 			vector<int>* g1edges = g1->getNeighboursFor(nodeSet.getNodeId(graph1));
@@ -140,7 +140,7 @@ namespace gh
 			delete g2edges;
 		}
 
-		
+		return pairScores;
 	}
 
 

@@ -50,17 +50,19 @@ int main() {
 
 	SeedSet* set = gh::CreateSeedSetFromFile(GraphFilesConfig::GetNoisySeedSetName());
 	auto pairScores = gh::CreateNeighbouringPairs(set, graph1, graph2);
+	for (auto pairMapItem : pairScores) {
+		auto pairScore = pairMapItem.second;		
+
+		if (pairScore->getScore() >= threshold 
+			&& !set->GraphContainsNode(csr::graph1,pairScore->getPair()->getNodeId(csr::graph1))
+			&& !set->GraphContainsNode(csr::graph2, pairScore->getPair()->getNodeId(csr::graph2)))
+		{
+			pairScore->Print();
+		}
+		
+	}
 	
-
-
-
-
-
-	vector<int>* edges = graph1->getNeighboursFor(5);
-	/*for (auto const &edge : *edges) {
-		cout << edge << endl;
-	}*/
-
+	delete set;
 	delete graph1;
 	delete graph2;
 
