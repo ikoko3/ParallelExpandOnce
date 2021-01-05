@@ -13,6 +13,8 @@ namespace csr {
 	public:
 		NodeSet();
 		NodeSet(string g1Name, string g2Name);
+
+		int getNodeId(int graph);
 		void print();
 	private:
 		string g1NodeName;
@@ -27,6 +29,7 @@ namespace csr {
 	public:
 		SeedSet();
 		SeedSet(deque<NodeSet> nodeSets);
+		deque<NodeSet> getNodeSets();
 		void print();
 	private:
 		deque<NodeSet> NodeSets;

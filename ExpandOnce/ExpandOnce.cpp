@@ -49,7 +49,8 @@ int main() {
 	Graph* graph2 = gh::CreateGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph2), GraphFilesConfig::LINES_TO_SKIP);
 
 	SeedSet* set = gh::CreateSeedSetFromFile(GraphFilesConfig::GetNoisySeedSetName());
-	set->print();
+	auto pairScores = gh::CreateNeighbouringPairs(set, graph1, graph2);
+	
 
 
 

@@ -1,11 +1,14 @@
 #include <string>
 #include "../Graph/Graph.h"
 #include "../Graph/SeedSet.h"
+#include "../Graph/Pair.h"
 
 using namespace std;
+using namespace csr;
 
 namespace gh
 {
-	csr::Graph* CreateGraphFromFile(string fileName, int skipLinesCount = 0);
-	csr::SeedSet* CreateSeedSetFromFile(string fileName);
+	Graph* CreateGraphFromFile(string fileName, int skipLinesCount = 0);
+	SeedSet* CreateSeedSetFromFile(string fileName);
+	map<string, PairMatchingScore*> CreateNeighbouringPairs(SeedSet* Set,Graph* g1,Graph* g2);
 }

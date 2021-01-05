@@ -8,7 +8,10 @@
 #include <vector>
 #include <deque>
 #include <string>
+#include <map>
 #include "../Graph/Node.h"
+#include "../Graph/Pair.h"
+
 
 
 using namespace std;
@@ -84,7 +87,7 @@ namespace gh
 		return new csr::Graph(csrNodes, csrEdges);
 	}
 
-	csr::SeedSet * CreateSeedSetFromFile(string fileName)
+	SeedSet * CreateSeedSetFromFile(string fileName)
 	{
 		fstream setFile = OpenFile(fileName);
 		deque<NodeSet> nodeSets;
@@ -102,6 +105,42 @@ namespace gh
 		setFile.close();
 
 		return new SeedSet(nodeSets);
+	}
+
+	map<string, PairMatchingScore*> CreateNeighbouringPairs(SeedSet *set, Graph* g1, Graph* g2)
+	{
+		map<string,PairMatchingScore*> pairScores;
+
+		for (auto &nodeSet : set->getNodeSets()) {
+			vector<int>* g1edges = g1->getNeighboursFor(nodeSet.getNodeId(graph1));
+			vector<int>* g2edges = g1->getNeighboursFor(nodeSet.getNodeId(graph2));
+
+			for (auto &g1edge : *g1edges) {
+				for (auto &g2edge : *g2edges) {
+					auto pair = new Pair(g1edge,g2edge);
+					auto pairKey = pair->getKey();
+
+					auto it = pairScores.find(pairKey);
+					PairMatchingScore* pairScore;
+
+					if (it == pairScores.end()) {
+						pairScore = new PairMatchingScore(pair);
+						pairScores[pairKey] = pairScore;
+					}
+					else {
+						pairScore = it->second;
+						pairScore->IncremenrScore();
+					}
+				
+					//pairScore->Print();
+				}
+			}
+
+			delete g1edges;
+			delete g2edges;
+		}
+
+		
 	}
 
 
