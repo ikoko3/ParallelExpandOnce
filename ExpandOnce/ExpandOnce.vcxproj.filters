@@ -10,6 +10,7 @@
     <ClCompile Include="Graph\Graph.cpp" />
     <ClCompile Include="Graph\SeedSet.cpp" />
     <ClCompile Include="Graph\Pair.cpp" />
+    <ClCompile Include="Algorithm\NoisySeeds.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config\GraphFilesConfig.hpp" />
@@ -18,6 +19,7 @@
     <ClInclude Include="Graph\Graph.h" />
     <ClInclude Include="Graph\SeedSet.h" />
     <ClInclude Include="Graph\Pair.h" />
+    <ClInclude Include="Algorithm\NoisySeeds.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\CLionProjects\graph_matching\graph1.adjlist" />

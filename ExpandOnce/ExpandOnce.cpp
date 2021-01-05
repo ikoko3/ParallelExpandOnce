@@ -14,6 +14,7 @@
 #include "Graph/Graph.h"
 #include "Helpers/GraphHelper.hpp"
 #include "Config/GraphFilesConfig.hpp"
+#include "Algorithm/NoisySeeds.h"
 #include "tbb/task.h"
 #include "tbb/task_scheduler_init.h"
 #include "tbb/tick_count.h"
@@ -43,25 +44,13 @@ using namespace csr;
 
 int main() {
 	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-	cout << "Starting Expand Once with threshold " << threshold << endl;
-
 	Graph* graph1 = gh::CreateGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph1), GraphFilesConfig::LINES_TO_SKIP);
 	Graph* graph2 = gh::CreateGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph2), GraphFilesConfig::LINES_TO_SKIP);
-
 	SeedSet* set = gh::CreateSeedSetFromFile(GraphFilesConfig::GetNoisySeedSetName());
-	auto pairScores = gh::CreateNeighbouringPairs(set, graph1, graph2);
-	for (auto pairMapItem : pairScores) {
-		auto pairScore = pairMapItem.second;		
 
-		if (pairScore->getScore() >= threshold 
-			&& !set->GraphContainsNode(csr::graph1,pairScore->getPair()->getNodeId(csr::graph1))
-			&& !set->GraphContainsNode(csr::graph2, pairScore->getPair()->getNodeId(csr::graph2)))
-		{
-			pairScore->Print();
-		}
-		
-	}
-	
+	alg::NoisySeedsSerial noisySeeds(graph1,graph2,threshold,set);
+	noisySeeds.Run();
+
 	delete set;
 	delete graph1;
 	delete graph2;
