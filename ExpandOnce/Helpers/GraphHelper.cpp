@@ -10,8 +10,7 @@
 #include <string>
 #include <map>
 #include "../Graph/Node.h"
-#include "../Graph/Pair.h"
-
+#include "../Graph/NodePair.h"
 
 
 using namespace std;
@@ -87,37 +86,37 @@ namespace gh
 		return new csr::Graph(csrNodes, csrEdges);
 	}
 
-	SeedSet * CreateSeedSetFromFile(string fileName)
+	MatchedPairsSet * CreateSeedSetFromFile(string fileName)
 	{
 		fstream setFile = OpenFile(fileName);
-		deque<NodeSet> nodeSets;
+		deque<NodePair*> nodeSets;
 
 		string tp;
 		while (getline(setFile, tp)) {
 			//We know the format is node1 node2, so we split the values and create a new item on each row
 			istringstream iss(tp);
 			vector<string> matchedNodes{ istream_iterator<string>{iss}, istream_iterator<string>{} };
-			nodeSets.push_back(NodeSet(matchedNodes[0],matchedNodes[1]));
+			nodeSets.push_back(new NodePair(matchedNodes[0],matchedNodes[1]));
 
 			//cout << tp << endl;
 	
 		}
 		setFile.close();
 
-		return new SeedSet(nodeSets);
+		return new MatchedPairsSet(nodeSets);
 	}
 
-	map<string, PairMatchingScore*> CreateNeighbouringPairs(SeedSet *set, Graph* g1, Graph* g2)
+	map<string, PairMatchingScore*> CreateNeighbouringPairs(MatchedPairsSet *set, Graph* g1, Graph* g2)
 	{
 		map<string, PairMatchingScore*> pairScores;
 
 		for (auto &nodeSet : set->getNodeSets()) {
-			vector<int>* g1edges = g1->getNeighboursFor(nodeSet.getNodeId(graph1));
-			vector<int>* g2edges = g1->getNeighboursFor(nodeSet.getNodeId(graph2));
+			vector<int>* g1edges = g1->getNeighboursFor(nodeSet->getNodeId(graph1));
+			vector<int>* g2edges = g1->getNeighboursFor(nodeSet->getNodeId(graph2));
 
 			for (auto &g1edge : *g1edges) {
 				for (auto &g2edge : *g2edges) {
-					auto pair = new Pair(g1edge,g2edge);
+					auto pair = new NodePair(g1edge,g2edge);
 					auto pairKey = pair->getKey();
 
 					auto it = pairScores.find(pairKey);

@@ -2,19 +2,19 @@
 #include <set>
 #include <deque>
 #include "../Graph/Graph.h"
-#include "../Graph/SeedSet.h"
+#include "../Graph/NodePair.h"
 
 
 namespace alg {
 	class NoisySeeds
 	{
 	public:
-		explicit NoisySeeds(csr::Graph* graph1, csr::Graph* graph2, int threshold, csr::SeedSet* seedSet);
-		void virtual Run();
+		explicit NoisySeeds(csr::Graph* graph1, csr::Graph* graph2, int threshold, csr::MatchedPairsSet* seedSet);
+		virtual csr::MatchedPairsSet* Run();
 	protected:
 		csr::Graph* Graph1;
 		csr::Graph* Graph2;
-		csr::SeedSet* SeedSet;
+		csr::MatchedPairsSet* SeedSet;
 		int Threshold;
 	};
 
@@ -22,12 +22,12 @@ namespace alg {
 	class NoisySeedsSerial : public NoisySeeds {
 	public:
 		using NoisySeeds::NoisySeeds;
-		void Run();
+		csr::MatchedPairsSet* Run();
 	};
 
 	class NoisySeedsParallel : public NoisySeeds {
 	public:
 		using NoisySeeds::NoisySeeds;
-		void Run();
+		csr::MatchedPairsSet* Run();
 	};
 }

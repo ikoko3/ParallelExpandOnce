@@ -198,8 +198,7 @@
     <ClCompile Include="Helpers\GraphHelper.cpp" />
     <ClCompile Include="Helpers\Helpers.cpp" />
     <ClCompile Include="Helpers\Helpers.hpp" />
-    <ClCompile Include="Graph\SeedSet.cpp" />
-    <ClCompile Include="Graph\Pair.cpp" />
+    <ClCompile Include="Graph\NodePair.cpp" />
     <ClCompile Include="Algorithm\NoisySeeds.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -207,8 +206,7 @@
     <ClInclude Include="Graph\Graph.h" />
     <ClInclude Include="Graph\Node.h" />
     <ClInclude Include="Helpers\GraphHelper.hpp" />
-    <ClInclude Include="Graph\SeedSet.h" />
-    <ClInclude Include="Graph\Pair.h" />
+    <ClInclude Include="Graph\NodePair.h" />
     <ClInclude Include="Algorithm\NoisySeeds.h" />
   </ItemGroup>
   <ItemGroup>

@@ -46,7 +46,7 @@ int main() {
 	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 	Graph* graph1 = gh::CreateGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph1), GraphFilesConfig::LINES_TO_SKIP);
 	Graph* graph2 = gh::CreateGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph2), GraphFilesConfig::LINES_TO_SKIP);
-	SeedSet* set = gh::CreateSeedSetFromFile(GraphFilesConfig::GetNoisySeedSetName());
+	MatchedPairsSet* set = gh::CreateSeedSetFromFile(GraphFilesConfig::GetNoisySeedSetName());
 
 	alg::NoisySeedsSerial noisySeeds(graph1,graph2,threshold,set);
 	noisySeeds.Run();
