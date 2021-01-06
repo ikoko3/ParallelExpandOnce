@@ -48,16 +48,15 @@ int main() {
 	Graph* graph2 = gh::CreateGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph2), GraphFilesConfig::LINES_TO_SKIP);
 	MatchedPairsSet* set = gh::CreateSeedSetFromFile(GraphFilesConfig::GetNoisySeedSetName());
 
-	alg::NoisySeedsSerial noisySeeds(graph1,graph2,threshold,set);
-	noisySeeds.Run();
+	alg::NoisySeedsSerial noisySeeds(graph1, graph2, threshold, set);
+	auto matchedValues = noisySeeds.Run();
 
+	delete matchedValues;
 	delete set;
 	delete graph1;
 	delete graph2;
 
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 	std::cout << "Total time: " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
-
-	//parallel();
 }
 

@@ -8,7 +8,7 @@ using namespace alg;
 using namespace csr;
 using namespace std;
 
-alg::NoisySeeds::NoisySeeds(csr::Graph * graph1, csr::Graph * graph2, int threshold, csr::MatchedPairsSet * seedSet)
+NoisySeeds::NoisySeeds(csr::Graph * graph1, csr::Graph * graph2, int threshold, csr::MatchedPairsSet * seedSet)
 {
 	Graph1 = graph1;
 	Graph2 = graph2;

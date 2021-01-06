@@ -30,6 +30,11 @@ PairMatchingScore::PairMatchingScore(NodePair* pair)
 	score = 1;
 }
 
+csr::PairMatchingScore::~PairMatchingScore()
+{
+	delete pair;
+}
+
 void PairMatchingScore::Print()
 {
 	cout << pair->getNodeId(graph1) << "|"<<pair->getNodeId(graph2) << "  --  Score:" << score << endl;
@@ -99,7 +104,8 @@ deque<NodePair*> MatchedPairsSet::getNodeSets()
 
 void MatchedPairsSet::addNodePair(NodePair* nodePair)
 {
-	NodePairs.push_back(nodePair);
+	//copy by value
+	NodePairs.push_back(new NodePair(*nodePair));
 }
 
 void MatchedPairsSet::AddMatchedPairs(deque<NodePair*> matchedPairs)

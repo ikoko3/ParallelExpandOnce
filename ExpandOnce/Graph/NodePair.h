@@ -29,6 +29,8 @@ namespace csr {
 	class PairMatchingScore {
 	public:
 		PairMatchingScore(NodePair* pair);
+		~PairMatchingScore();
+
 		void Print();
 		void IncremenrScore();
 		int getScore();
