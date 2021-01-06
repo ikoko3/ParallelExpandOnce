@@ -91,10 +91,18 @@ MatchedPairsSet::MatchedPairsSet(deque<NodePair*> pairsSet)
 	NodePairs = pairsSet;
 }
 
+MatchedPairsSet::MatchedPairsSet(MatchedPairsSet* pairsSet)
+{
+	AddMatchedPairs(pairsSet);
+}
+
 MatchedPairsSet::~MatchedPairsSet()
 {
 	if (Graph1Nodes != nullptr) delete Graph1Nodes;
 	if (Graph2Nodes != nullptr) delete Graph2Nodes;
+	for (auto pair : NodePairs) {
+		delete pair;
+	}
 }
 
 deque<NodePair*> MatchedPairsSet::getNodeSets()
@@ -104,15 +112,13 @@ deque<NodePair*> MatchedPairsSet::getNodeSets()
 
 void MatchedPairsSet::addNodePair(NodePair* nodePair)
 {
-	//copy by value
 	NodePairs.push_back(new NodePair(*nodePair));
 }
 
 void MatchedPairsSet::AddMatchedPairs(deque<NodePair*> matchedPairs)
 {
-	for (auto const pair : matchedPairs) {
-		NodePairs.push_back(pair);
-	}
+	for (auto const pair : matchedPairs) 
+		NodePairs.push_back(new NodePair(*pair));
 }
 
 void MatchedPairsSet::AddMatchedPairs(MatchedPairsSet* pairsSet)
@@ -122,10 +128,9 @@ void MatchedPairsSet::AddMatchedPairs(MatchedPairsSet* pairsSet)
 
 set<NodePair*>* GetSetFromDeque(deque<NodePair*> nodePairs) {
 	set<NodePair*>* pairsSet = new set<NodePair*>();
-	for (auto pair : nodePairs) {
+	for (auto pair : nodePairs) 
 		pairsSet->insert(pair);
-	}
-
+	
 	return pairsSet;
 }
 

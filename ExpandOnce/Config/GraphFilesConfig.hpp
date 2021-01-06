@@ -2,11 +2,11 @@
 #include <stdexcept>
 
 
-#define GRAPH_FILES_ROOT "C:\\Users\\john_\\PycharmProjects\\"
+#define GRAPH_FILES_ROOT "C:\\Users\\john_\\CLionProjects\\graph_matching\\"
 
 #define GRAPH_FILE1 "graph1.adjlist"
 #define GRAPH_FILE2 "graph2.adjlist"
-#define NOISY_SET "noisy_set"
+#define NOISY_SET "noisy_set.list"
 
 using namespace std;
 

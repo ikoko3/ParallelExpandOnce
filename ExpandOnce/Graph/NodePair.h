@@ -45,6 +45,7 @@ namespace csr {
 	public:
 		MatchedPairsSet();
 		MatchedPairsSet(deque<NodePair*> pairsSet);
+		MatchedPairsSet(MatchedPairsSet* pairsSet);
 		~MatchedPairsSet();
 		
 		deque<NodePair*> getNodeSets();

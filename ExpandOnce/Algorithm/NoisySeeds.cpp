@@ -22,7 +22,7 @@ MatchedPairsSet* NoisySeedsSerial::Run()
 
 	MatchedPairsSet* matchedPairs = new MatchedPairsSet();
 	matchedPairs->AddMatchedPairs(SeedSet);
-	MatchedPairsSet* usedPairs = new MatchedPairsSet();
+	
 
 	auto pairScores = new map<string, PairMatchingScore*>();
 
@@ -37,6 +37,7 @@ MatchedPairsSet* NoisySeedsSerial::Run()
 		}
 	}
 
+	MatchedPairsSet* usedPairs = new MatchedPairsSet();
 	usedPairs->AddMatchedPairs(SeedSet);
 
 	auto diff = usedPairs->GetDifference(matchedPairs);
@@ -66,7 +67,6 @@ MatchedPairsSet* NoisySeedsSerial::Run()
 		delete pair.second;
 	}
 	delete pairScores;
-	matchedPairs->print();
 
 	return matchedPairs;
 }

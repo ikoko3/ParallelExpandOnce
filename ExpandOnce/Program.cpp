@@ -15,6 +15,7 @@
 #include "Helpers/GraphHelper.hpp"
 #include "Config/GraphFilesConfig.hpp"
 #include "Algorithm/NoisySeeds.h"
+#include "Algorithm/ExpandOnce.h"
 #include "tbb/task.h"
 #include "tbb/task_scheduler_init.h"
 #include "tbb/tick_count.h"
@@ -39,6 +40,7 @@ using namespace tbb;
 
 
 static const int threshold = 2;
+static const int seedSize = 5;
 
 using namespace csr;
 
@@ -48,8 +50,11 @@ int main() {
 	Graph* graph2 = gh::CreateGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph2), GraphFilesConfig::LINES_TO_SKIP);
 	MatchedPairsSet* set = gh::CreateSeedSetFromFile(GraphFilesConfig::GetNoisySeedSetName());
 
-	alg::NoisySeedsSerial noisySeeds(graph1, graph2, threshold, set);
-	auto matchedValues = noisySeeds.Run();
+
+	alg::ExpandOnceSerial expandOnce(graph1, graph2, threshold, seedSize, set);
+	auto matchedValues = expandOnce.Run();
+	matchedValues->print();
+
 
 	delete matchedValues;
 	delete set;

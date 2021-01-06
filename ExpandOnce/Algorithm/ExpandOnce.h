@@ -13,7 +13,7 @@ namespace alg {
 		csr::Graph* Graph2;
 		csr::MatchedPairsSet* SeedSet;
 		int Threshold;
-		int a;
+		int ExpandedSeedSize;
 	};
 
 	class ExpandOnceSerial : public ExpandOnce {
