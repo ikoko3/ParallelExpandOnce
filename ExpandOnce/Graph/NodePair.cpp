@@ -1,5 +1,7 @@
 #include "NodePair.h"
 #include "Graph.h"
+#include <map>
+#include <algorithm>
 
 using namespace csr;
 using namespace std;
@@ -100,6 +102,44 @@ void MatchedPairsSet::addNodePair(NodePair* nodePair)
 	NodePairs.push_back(nodePair);
 }
 
+void MatchedPairsSet::AddMatchedPairs(deque<NodePair*> matchedPairs)
+{
+	for (auto const pair : matchedPairs) {
+		NodePairs.push_back(pair);
+	}
+}
+
+void MatchedPairsSet::AddMatchedPairs(MatchedPairsSet* pairsSet)
+{
+	AddMatchedPairs(pairsSet->getNodeSets());
+}
+
+set<NodePair*>* GetSetFromDeque(deque<NodePair*> nodePairs) {
+	set<NodePair*>* pairsSet = new set<NodePair*>();
+	for (auto pair : nodePairs) {
+		pairsSet->insert(pair);
+	}
+
+	return pairsSet;
+}
+
+deque<NodePair*> MatchedPairsSet::GetDifference(MatchedPairsSet * pairsSet)
+{
+	map<string, NodePair*> existingPairs;
+	for (auto pair : NodePairs) {
+		existingPairs[pair->getKey()] = pair;
+	}
+	deque<NodePair*> pairsDifference;
+
+	for (auto pair : pairsSet->getNodeSets()) {
+		auto it = existingPairs.find(pair->getKey());
+		if (it == existingPairs.end())
+			pairsDifference.push_back(pair);
+	}
+
+	return pairsDifference;
+}
+
 void MatchedPairsSet::LoadNodesForGraph(int graph) {
 	auto nodes = new set<int>;
 	for (auto nodeSet : NodePairs) {
@@ -148,4 +188,9 @@ void MatchedPairsSet::print()
 		node->print();
 	}
 	cout << endl;
+}
+
+bool csr::operator<( NodePair  &left,  NodePair &right)
+{
+	return left.getKey() < right.getKey();
 }

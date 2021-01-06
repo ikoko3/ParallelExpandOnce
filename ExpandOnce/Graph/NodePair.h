@@ -16,6 +16,7 @@ namespace csr {
 		std::string getKey();
 		int getNodeId(int graph);
 		void print();
+		friend bool operator< ( NodePair &left,  NodePair &right);
 	private:
 		std::string g1NodeName;
 		std::string g2NodeName;
@@ -46,6 +47,10 @@ namespace csr {
 		
 		deque<NodePair*> getNodeSets();
 		void addNodePair(NodePair* nodePair);
+		void AddMatchedPairs(deque<NodePair*> matchedPairs);
+		void AddMatchedPairs(MatchedPairsSet* pairsSet);
+
+		deque<NodePair*> GetDifference(MatchedPairsSet* pairsSet);
 
 		set<int>* getNodesForGraph(int graph);
 		bool GraphContainsNode(int graph, int nodeId);
@@ -54,6 +59,7 @@ namespace csr {
 	private:
 		void MatchedPairsSet::LoadNodesForGraph(int graph);
 		deque<NodePair*> NodePairs;
+
 		set<int>* Graph1Nodes;
 		set<int>* Graph2Nodes;
 	};
