@@ -161,23 +161,20 @@ void MatchedPairsSet::LoadNodesForGraph(int graph) {
 
 set<int>* MatchedPairsSet::getNodesForGraph(int graph)
 {
-	switch (graph) {
-	case graph1:
-		if (Graph1Nodes == nullptr)
-			LoadNodesForGraph(graph1);
-		return Graph1Nodes;
-	case graph2:
-		if (Graph2Nodes == nullptr)
-			LoadNodesForGraph(graph2);
-		return Graph1Nodes;
-	default:
-		throw graph;
-	}
+	auto nodes = new set<int>;
+	for (auto nodeSet : NodePairs) 
+		nodes->insert(nodeSet->getNodeId(graph));
+	
+	return nodes;
 }
 
 bool MatchedPairsSet::GraphContainsNode(int graph, int nodeId)
 {
-	return getNodesForGraph(graph)->count(nodeId) > 0;
+	auto graphNodes = getNodesForGraph(graph);
+	auto containsNode = graphNodes->count(nodeId) > 0;
+	delete graphNodes;
+
+	return containsNode;
 }
 
 void MatchedPairsSet::print()

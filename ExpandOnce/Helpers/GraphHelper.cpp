@@ -106,11 +106,9 @@ namespace gh
 		return new MatchedPairsSet(nodeSets);
 	}
 
-	map<string, PairMatchingScore*> CreateNeighbouringPairs(MatchedPairsSet *set, Graph* g1, Graph* g2)
+	void CreateNeighbouringPairs(deque<NodePair*> nodePairs, Graph* g1, Graph* g2, map<string, PairMatchingScore*>* pairScores)
 	{
-		map<string, PairMatchingScore*> pairScores;
-
-		for (auto &nodeSet : set->getNodeSets()) {
+		for (auto &nodeSet : nodePairs) {
 			vector<int>* g1edges = g1->getNeighboursFor(nodeSet->getNodeId(graph1));
 			vector<int>* g2edges = g1->getNeighboursFor(nodeSet->getNodeId(graph2));
 
@@ -119,12 +117,12 @@ namespace gh
 					auto pair = new NodePair(g1edge,g2edge);
 					auto pairKey = pair->getKey();
 
-					auto it = pairScores.find(pairKey);
+					auto it = pairScores->find(pairKey);
 					PairMatchingScore* pairScore;
 
-					if (it == pairScores.end()) {
+					if (it == pairScores->end()) {
 						pairScore = new PairMatchingScore(pair);
-						pairScores[pairKey] = pairScore;
+						(*pairScores)[pairKey] = pairScore;
 					}
 					else {
 						pairScore = it->second;
@@ -138,8 +136,6 @@ namespace gh
 			delete g1edges;
 			delete g2edges;
 		}
-
-		return pairScores;
 	}
 
 

@@ -24,43 +24,50 @@ MatchedPairsSet* NoisySeedsSerial::Run()
 	matchedPairs->AddMatchedPairs(SeedSet);
 	MatchedPairsSet* usedPairs = new MatchedPairsSet();
 
-	auto pairScores = gh::CreateNeighbouringPairs(SeedSet, Graph1, Graph2);
-	for (auto pairMapItem : pairScores) {
+	auto pairScores = new map<string, PairMatchingScore*>();
+
+	gh::CreateNeighbouringPairs(SeedSet->getNodeSets(), Graph1, Graph2,pairScores);
+	for (auto pairMapItem : *pairScores) {
 		auto pairScore = pairMapItem.second;
 		if (pairScore->getScore() >= Threshold
-			&& !SeedSet->GraphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
-			&& !SeedSet->GraphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2))) 
+			&& !matchedPairs->GraphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
+			&& !matchedPairs->GraphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2)))
 		{
 			matchedPairs->addNodePair(pairScore->getPair());
 		}
-		else 
-			delete pairScore;
 	}
 
 	usedPairs->AddMatchedPairs(SeedSet);
 
 	auto diff = usedPairs->GetDifference(matchedPairs);
 	srand(time(NULL));
-	while (diff.size() > 0) {
+	bool foundAtLeastOneOverThreshold = true;
+	while (diff.size() > 0 && foundAtLeastOneOverThreshold) {
 		auto randomPair = diff[rand() % (diff.size() - 1)];
 		usedPairs->addNodePair(randomPair);
 
-		//Vote neighbour nodes
-		//Check threshold
-		//add to the matched set
-
-		//TODO:remove break after implementation
-		break;
+		gh::CreateNeighbouringPairs(deque<NodePair*>({randomPair}), Graph1, Graph2, pairScores);
+		foundAtLeastOneOverThreshold = false;
+		for (auto pairMapItem : *pairScores) {
+			auto pairScore = pairMapItem.second;
+			if (pairScore->getScore() >= Threshold
+				&& !matchedPairs->GraphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
+				&& !matchedPairs->GraphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2)))
+			{
+				matchedPairs->addNodePair(pairScore->getPair());
+				foundAtLeastOneOverThreshold = true;
+			}
+		}
 		diff = usedPairs->GetDifference(matchedPairs);
 	}
 
-
-
-
-	usedPairs->print();
 	delete usedPairs;
+	for (auto pair : *pairScores) {
+		delete pair.second;
+	}
+	delete pairScores;
 	matchedPairs->print();
-	
+
 	return matchedPairs;
 }
 
