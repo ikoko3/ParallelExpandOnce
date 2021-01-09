@@ -20,6 +20,6 @@ public:
 
 	static string getGraphFileName(int graph_no);
 
-	static string GetNoisySeedSetName();
+	static string getNoisySeedSetName();
 };
 

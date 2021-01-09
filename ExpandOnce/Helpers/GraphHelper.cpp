@@ -126,7 +126,7 @@ namespace gh
 					}
 					else {
 						pairScore = it->second;
-						pairScore->IncremenrScore();
+						pairScore->incrementScore();
 					}
 				
 					//pairScore->Print();

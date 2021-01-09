@@ -35,12 +35,12 @@ csr::PairMatchingScore::~PairMatchingScore()
 	delete pair;
 }
 
-void PairMatchingScore::Print()
+void PairMatchingScore::print()
 {
 	cout << pair->getNodeId(graph1) << "|"<<pair->getNodeId(graph2) << "  --  Score:" << score << endl;
 }
 
-void PairMatchingScore::IncremenrScore()
+void PairMatchingScore::incrementScore()
 {
 	score++;
 }
@@ -77,6 +77,11 @@ void NodePair::print()
 	cout << "G1:(" << g1NodeName << "/" << g1NodeId << "),G2:(" << g2NodeName << "/" << g2NodeId << ")" << endl;
 }
 
+bool csr::NodePair::valuesAreMatched()
+{
+	return g1NodeId == g2NodeId;
+}
+
 
 MatchedPairsSet::MatchedPairsSet()
 {
@@ -93,7 +98,7 @@ MatchedPairsSet::MatchedPairsSet(deque<NodePair*> pairsSet)
 
 MatchedPairsSet::MatchedPairsSet(MatchedPairsSet* pairsSet)
 {
-	AddMatchedPairs(pairsSet);
+	addMatchedPairs(pairsSet);
 }
 
 MatchedPairsSet::~MatchedPairsSet()
@@ -115,15 +120,15 @@ void MatchedPairsSet::addNodePair(NodePair* nodePair)
 	NodePairs.push_back(new NodePair(*nodePair));
 }
 
-void MatchedPairsSet::AddMatchedPairs(deque<NodePair*> matchedPairs)
+void MatchedPairsSet::addMatchedPairs(deque<NodePair*> matchedPairs)
 {
 	for (auto const pair : matchedPairs) 
 		NodePairs.push_back(new NodePair(*pair));
 }
 
-void MatchedPairsSet::AddMatchedPairs(MatchedPairsSet* pairsSet)
+void MatchedPairsSet::addMatchedPairs(MatchedPairsSet* pairsSet)
 {
-	AddMatchedPairs(pairsSet->getNodeSets());
+	addMatchedPairs(pairsSet->getNodeSets());
 }
 
 set<NodePair*>* GetSetFromDeque(deque<NodePair*> nodePairs) {
@@ -134,7 +139,7 @@ set<NodePair*>* GetSetFromDeque(deque<NodePair*> nodePairs) {
 	return pairsSet;
 }
 
-deque<NodePair*> MatchedPairsSet::GetDifference(MatchedPairsSet * pairsSet)
+deque<NodePair*> MatchedPairsSet::getDifference(MatchedPairsSet * pairsSet)
 {
 	map<string, NodePair*> existingPairs;
 	for (auto pair : NodePairs) {
@@ -196,6 +201,18 @@ void MatchedPairsSet::print()
 		node->print();
 	}
 	cout << endl;
+}
+
+void csr::MatchedPairsSet::printAccuracy()
+{
+	int  correct = 0;
+	for (auto node : NodePairs) {
+		if (node->valuesAreMatched())
+			correct++;
+	}
+	float accuracy = (float)correct / (float)NodePairs.size();
+
+	cout <<"Accuracy: "<< accuracy << " ("<< correct <<"/"<< NodePairs.size()<<")"<< endl;
 }
 
 bool csr::operator<( NodePair  &left,  NodePair &right)

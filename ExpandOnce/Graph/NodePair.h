@@ -17,6 +17,7 @@ namespace csr {
 		int getNodeId(int graph);
 		void print();
 		friend bool operator< ( NodePair &left,  NodePair &right);
+		bool valuesAreMatched();
 	private:
 		std::string g1NodeName;
 		std::string g2NodeName;
@@ -31,8 +32,8 @@ namespace csr {
 		PairMatchingScore(NodePair* pair);
 		~PairMatchingScore();
 
-		void Print();
-		void IncremenrScore();
+		void print();
+		void incrementScore();
 		int getScore();
 		NodePair* getPair();
 	private:
@@ -50,15 +51,16 @@ namespace csr {
 		
 		deque<NodePair*> getNodeSets();
 		void addNodePair(NodePair* nodePair);
-		void AddMatchedPairs(deque<NodePair*> matchedPairs);
-		void AddMatchedPairs(MatchedPairsSet* pairsSet);
+		void addMatchedPairs(deque<NodePair*> matchedPairs);
+		void addMatchedPairs(MatchedPairsSet* pairsSet);
 
-		deque<NodePair*> GetDifference(MatchedPairsSet* pairsSet);
+		deque<NodePair*> getDifference(MatchedPairsSet* pairsSet);
 
 		set<int>* getNodesForGraph(int graph);
 		bool GraphContainsNode(int graph, int nodeId);
 
 		void print();
+		void printAccuracy();
 	private:
 		void MatchedPairsSet::LoadNodesForGraph(int graph);
 		deque<NodePair*> NodePairs;

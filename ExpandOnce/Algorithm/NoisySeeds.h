@@ -10,7 +10,7 @@ namespace alg {
 	{
 	public:
 		explicit NoisySeeds(csr::Graph* graph1, csr::Graph* graph2, int threshold, csr::MatchedPairsSet* seedSet);
-		virtual csr::MatchedPairsSet* Run();
+		virtual csr::MatchedPairsSet* run();
 	protected:
 		csr::Graph* Graph1;
 		csr::Graph* Graph2;
@@ -22,12 +22,12 @@ namespace alg {
 	class NoisySeedsSerial : public NoisySeeds {
 	public:
 		using NoisySeeds::NoisySeeds;
-		csr::MatchedPairsSet* Run();
+		csr::MatchedPairsSet* run();
 	};
 
 	class NoisySeedsParallel : public NoisySeeds {
 	public:
 		using NoisySeeds::NoisySeeds;
-		csr::MatchedPairsSet* Run();
+		csr::MatchedPairsSet* run();
 	};
 }

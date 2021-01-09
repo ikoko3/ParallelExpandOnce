@@ -7,7 +7,7 @@ namespace alg {
 	{
 	public:
 		explicit ExpandOnce(csr::Graph* graph1, csr::Graph* graph2, int threshold, int a,csr::MatchedPairsSet* seedSet);
-		virtual csr::MatchedPairsSet* Run();
+		virtual csr::MatchedPairsSet* run();
 	protected:
 		csr::Graph* Graph1;
 		csr::Graph* Graph2;
@@ -19,13 +19,13 @@ namespace alg {
 	class ExpandOnceSerial : public ExpandOnce {
 	public:
 		using ExpandOnce::ExpandOnce;
-		csr::MatchedPairsSet* Run();
+		csr::MatchedPairsSet* run();
 	};
 
 	class ExpandOnceParallel : public ExpandOnce {
 	public:
 		using ExpandOnce::ExpandOnce;
-		csr::MatchedPairsSet* Run();
+		csr::MatchedPairsSet* run();
 	};
 }
 

@@ -17,7 +17,7 @@ string GraphFilesConfig::getGraphFileName(int graph_no)
 	return string(GRAPH_FILES_ROOT) + file_name;
 }
 
-string GraphFilesConfig::GetNoisySeedSetName()
+string GraphFilesConfig::getNoisySeedSetName()
 {
 	return string(GRAPH_FILES_ROOT) + string(NOISY_SET);
 }

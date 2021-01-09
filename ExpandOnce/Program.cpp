@@ -39,29 +39,30 @@ using namespace std;
 using namespace tbb;
 
 
-static const int threshold = 2;
-static const int seedSize = 5;
+static const int threshold = 3;
+static const int seedSize = 12;
 
 using namespace csr;
 
 int main() {
-	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+	
 	Graph* graph1 = gh::CreateGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph1), GraphFilesConfig::LINES_TO_SKIP);
 	Graph* graph2 = gh::CreateGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph2), GraphFilesConfig::LINES_TO_SKIP);
-	MatchedPairsSet* set = gh::CreateSeedSetFromFile(GraphFilesConfig::GetNoisySeedSetName());
+	MatchedPairsSet* set = gh::CreateSeedSetFromFile(GraphFilesConfig::getNoisySeedSetName());
 
 
+	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 	alg::ExpandOnceSerial expandOnce(graph1, graph2, threshold, seedSize, set);
-	auto matchedValues = expandOnce.Run();
-	matchedValues->print();
+	auto matchedValues = expandOnce.run();
+	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+	matchedValues->printAccuracy();
+	std::cout << "Total time: " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
 
 
 	delete matchedValues;
 	delete set;
 	delete graph1;
-	delete graph2;
-
-	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-	std::cout << "Total time: " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
+	delete graph2;	
 }
 

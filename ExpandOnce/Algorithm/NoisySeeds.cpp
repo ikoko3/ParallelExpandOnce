@@ -16,12 +16,12 @@ NoisySeeds::NoisySeeds(csr::Graph * graph1, csr::Graph * graph2, int threshold, 
 	Threshold = threshold;
 }
 
-MatchedPairsSet* NoisySeedsSerial::Run()
+MatchedPairsSet* NoisySeedsSerial::run()
 {
 	cout << "Starting Serial Noisy Seeds with threshold " << Threshold << endl;
 
 	MatchedPairsSet* matchedPairs = new MatchedPairsSet();
-	matchedPairs->AddMatchedPairs(SeedSet);
+	matchedPairs->addMatchedPairs(SeedSet);
 	
 
 	auto pairScores = new map<string, PairMatchingScore*>();
@@ -38,9 +38,9 @@ MatchedPairsSet* NoisySeedsSerial::Run()
 	}
 
 	MatchedPairsSet* usedPairs = new MatchedPairsSet();
-	usedPairs->AddMatchedPairs(SeedSet);
+	usedPairs->addMatchedPairs(SeedSet);
 
-	auto diff = usedPairs->GetDifference(matchedPairs);
+	auto diff = usedPairs->getDifference(matchedPairs);
 	srand(time(NULL));
 	bool foundAtLeastOneOverThreshold = true;
 	while (diff.size() > 0 && foundAtLeastOneOverThreshold) {
@@ -59,7 +59,7 @@ MatchedPairsSet* NoisySeedsSerial::Run()
 				foundAtLeastOneOverThreshold = true;
 			}
 		}
-		diff = usedPairs->GetDifference(matchedPairs);
+		diff = usedPairs->getDifference(matchedPairs);
 	}
 
 	delete usedPairs;
@@ -71,7 +71,7 @@ MatchedPairsSet* NoisySeedsSerial::Run()
 	return matchedPairs;
 }
 
-MatchedPairsSet* alg::NoisySeedsParallel::Run()
+MatchedPairsSet* alg::NoisySeedsParallel::run()
 {
 	//not implemented yet
 	throw;
@@ -79,7 +79,7 @@ MatchedPairsSet* alg::NoisySeedsParallel::Run()
 
 
 
-MatchedPairsSet* alg::NoisySeeds::Run()
+MatchedPairsSet* alg::NoisySeeds::run()
 {
 	//only for overide
 	throw;

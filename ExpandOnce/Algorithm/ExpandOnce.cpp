@@ -17,24 +17,24 @@ ExpandOnce::ExpandOnce(csr::Graph * graph1, csr::Graph * graph2, int threshold,i
 	this->ExpandedSeedSize = expandedSeedSize;
 }
 
-csr::MatchedPairsSet * alg::ExpandOnce::Run()
+csr::MatchedPairsSet * alg::ExpandOnce::run()
 {
 	//asbtract
 	throw;
 }
 
-csr::MatchedPairsSet * alg::ExpandOnceSerial::Run()
+csr::MatchedPairsSet * alg::ExpandOnceSerial::run()
 {
 	cout << "Started expand once"<< endl;
 
 	auto expandedSeedSet = new MatchedPairsSet();
-	expandedSeedSet->AddMatchedPairs(SeedSet);
+	expandedSeedSet->addMatchedPairs(SeedSet);
 	auto A = new MatchedPairsSet();
-	A->AddMatchedPairs(SeedSet);
+	A->addMatchedPairs(SeedSet);
 	while (expandedSeedSet->getNodeSets().size() < ExpandedSeedSize) {
 		auto Z = new MatchedPairsSet();
 		auto U = new MatchedPairsSet();
-		U->AddMatchedPairs(expandedSeedSet);
+		U->addMatchedPairs(expandedSeedSet);
 		for (auto pair : A->getNodeSets()) {
 			auto pairScores = new map<string, PairMatchingScore*>();
 			gh::CreateNeighbouringPairs(deque<NodePair*>({ pair }), Graph1, Graph2, pairScores);
@@ -58,12 +58,12 @@ csr::MatchedPairsSet * alg::ExpandOnceSerial::Run()
 
 
 	NoisySeedsSerial noisySeeds(Graph1, Graph2, Threshold, expandedSeedSet);
-	auto matchedValues = noisySeeds.Run();
+	auto matchedValues = noisySeeds.run();
 
 	return matchedValues;
 }
 
-csr::MatchedPairsSet * alg::ExpandOnceParallel::Run()
+csr::MatchedPairsSet * alg::ExpandOnceParallel::run()
 {
 	//Not implemented yet
 	return nullptr;
