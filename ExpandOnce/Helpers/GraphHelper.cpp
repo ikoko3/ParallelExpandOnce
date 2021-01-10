@@ -108,34 +108,39 @@ namespace gh
 
 	void CreateNeighbouringPairs(deque<NodePair*> nodePairs, Graph* g1, Graph* g2, map<string, PairMatchingScore*>* pairScores)
 	{
-		for (auto &nodeSet : nodePairs) {
-			vector<int>* g1edges = g1->getNeighboursFor(nodeSet->getNodeId(graph1));
-			vector<int>* g2edges = g1->getNeighboursFor(nodeSet->getNodeId(graph2));
+		for (auto &nodeSet : nodePairs) 
+			CreateNeighbouringPairs(nodeSet, g1, g2, pairScores);
+		
+	}
 
-			for (auto &g1edge : *g1edges) {
-				for (auto &g2edge : *g2edges) {
-					auto pair = new NodePair(g1edge,g2edge);
-					auto pairKey = pair->getKey();
+	void CreateNeighbouringPairs(NodePair * nodePair, Graph * g1, Graph * g2, map<string, PairMatchingScore*>* pairScores)
+	{
+		vector<int>* g1edges = g1->getNeighboursFor(nodePair->getNodeId(graph1));
+		vector<int>* g2edges = g1->getNeighboursFor(nodePair->getNodeId(graph2));
 
-					auto it = pairScores->find(pairKey);
-					PairMatchingScore* pairScore;
+		for (auto &g1edge : *g1edges) {
+			for (auto &g2edge : *g2edges) {
+				auto pair = new NodePair(g1edge, g2edge);
+				auto pairKey = pair->getKey();
 
-					if (it == pairScores->end()) {
-						pairScore = new PairMatchingScore(pair);
-						(*pairScores)[pairKey] = pairScore;
-					}
-					else {
-						pairScore = it->second;
-						pairScore->incrementScore();
-					}
-				
-					//pairScore->Print();
+				auto it = pairScores->find(pairKey);
+				PairMatchingScore* pairScore;
+
+				if (it == pairScores->end()) {
+					pairScore = new PairMatchingScore(pair);
+					(*pairScores)[pairKey] = pairScore;
 				}
-			}
+				else {
+					pairScore = it->second;
+					pairScore->incrementScore();
+				}
 
-			delete g1edges;
-			delete g2edges;
+				//pairScore->Print();
+			}
 		}
+
+		delete g1edges;
+		delete g2edges;
 	}
 
 

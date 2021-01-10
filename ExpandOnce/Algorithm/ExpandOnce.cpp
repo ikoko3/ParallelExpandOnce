@@ -27,25 +27,26 @@ csr::MatchedPairsSet * alg::ExpandOnceSerial::run()
 {
 	cout << "Started expand once"<< endl;
 
-	auto expandedSeedSet = new MatchedPairsSet();
-	expandedSeedSet->addMatchedPairs(SeedSet);
+	auto A0i = new MatchedPairsSet();
+	A0i->addMatchedPairs(SeedSet);
 	auto A = new MatchedPairsSet();
 	A->addMatchedPairs(SeedSet);
-	while (expandedSeedSet->getNodeSets().size() < ExpandedSeedSize) {
+
+	while (A0i->getNodeSets().size() < ExpandedSeedSize) {
 		auto Z = new MatchedPairsSet();
 		auto U = new MatchedPairsSet();
-		U->addMatchedPairs(expandedSeedSet);
+		U->addMatchedPairs(A0i);
 		for (auto pair : A->getNodeSets()) {
 			auto pairScores = new map<string, PairMatchingScore*>();
-			gh::CreateNeighbouringPairs(deque<NodePair*>({ pair }), Graph1, Graph2, pairScores);
+			gh::CreateNeighbouringPairs(pair, Graph1, Graph2, pairScores);
 			for (auto pairMapItem : *pairScores) {
 				auto pairScore = pairMapItem.second;
-				if (expandedSeedSet->getNodeSets().size() < ExpandedSeedSize 
+				if (A0i->getNodeSets().size() < ExpandedSeedSize 
 					&& !U->GraphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
 					&& !U->GraphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2)))
 				{
 					Z->addNodePair(pairScore->getPair());
-					expandedSeedSet->addNodePair(pairScore->getPair());
+					A0i->addNodePair(pairScore->getPair());
 				}
 
 			}
@@ -55,9 +56,9 @@ csr::MatchedPairsSet * alg::ExpandOnceSerial::run()
 		delete U;
 		A = Z;
 	}
+	//A0i->print();
 
-
-	NoisySeedsSerial noisySeeds(Graph1, Graph2, Threshold, expandedSeedSet);
+	NoisySeedsSerial noisySeeds(Graph1, Graph2, Threshold, A0i);
 	auto matchedValues = noisySeeds.run();
 
 	return matchedValues;

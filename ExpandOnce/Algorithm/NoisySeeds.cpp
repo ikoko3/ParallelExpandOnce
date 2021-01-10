@@ -47,7 +47,7 @@ MatchedPairsSet* NoisySeedsSerial::run()
 		auto randomPair = diff[rand() % (diff.size() - 1)];
 		usedPairs->addNodePair(randomPair);
 
-		gh::CreateNeighbouringPairs(deque<NodePair*>({randomPair}), Graph1, Graph2, pairScores);
+		gh::CreateNeighbouringPairs(randomPair, Graph1, Graph2, pairScores);
 		foundAtLeastOneOverThreshold = false;
 		for (auto pairMapItem : *pairScores) {
 			auto pairScore = pairMapItem.second;

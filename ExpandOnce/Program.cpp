@@ -40,16 +40,14 @@ using namespace tbb;
 
 
 static const int threshold = 3;
-static const int seedSize = 12;
+static const int seedSize = 11;
 
 using namespace csr;
 
 int main() {
-	
 	Graph* graph1 = gh::CreateGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph1), GraphFilesConfig::LINES_TO_SKIP);
 	Graph* graph2 = gh::CreateGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph2), GraphFilesConfig::LINES_TO_SKIP);
 	MatchedPairsSet* set = gh::CreateSeedSetFromFile(GraphFilesConfig::getNoisySeedSetName());
-
 
 	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 	alg::ExpandOnceSerial expandOnce(graph1, graph2, threshold, seedSize, set);

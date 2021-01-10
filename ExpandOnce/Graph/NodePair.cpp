@@ -186,11 +186,11 @@ set<int>* MatchedPairsSet::getNodesForGraph(int graph)
 
 bool MatchedPairsSet::GraphContainsNode(int graph, int nodeId)
 {
-	auto graphNodes = getNodesForGraph(graph);
-	auto containsNode = graphNodes->count(nodeId) > 0;
-	delete graphNodes;
-
-	return containsNode;
+	for (auto nodeSet : NodePairs) 
+		if (nodeSet->getNodeId(graph) == nodeId)
+			return true;
+	
+	return false;
 }
 
 void MatchedPairsSet::print()

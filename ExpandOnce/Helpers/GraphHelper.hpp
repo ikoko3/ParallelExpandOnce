@@ -12,4 +12,5 @@ namespace gh
 	Graph* CreateGraphFromFile(string fileName, int skipLinesCount = 0);
 	MatchedPairsSet* CreateSeedSetFromFile(string fileName);
 	void CreateNeighbouringPairs(deque<NodePair*> nodePairs, Graph* g1, Graph* g2, map<string, PairMatchingScore*>* pairScores);
+	void CreateNeighbouringPairs(NodePair* nodePair, Graph* g1, Graph* g2, map<string, PairMatchingScore*>* pairScores);
 }
