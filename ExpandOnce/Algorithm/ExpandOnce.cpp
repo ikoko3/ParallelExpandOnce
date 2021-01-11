@@ -38,12 +38,12 @@ csr::MatchedPairsSet * alg::ExpandOnceSerial::run()
 		U->addMatchedPairs(A0i);
 		for (auto pair : A->getNodeSets()) {
 			auto pairScores = new map<string, PairMatchingScore*>();
-			gh::CreateNeighbouringPairs(pair, Graph1, Graph2, pairScores);
+			gh::createNeighbouringPairs(pair, Graph1, Graph2, pairScores);
 			for (auto pairMapItem : *pairScores) {
 				auto pairScore = pairMapItem.second;
 				if (A0i->getNodeSets().size() < ExpandedSeedSize 
-					&& !U->GraphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
-					&& !U->GraphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2)))
+					&& !U->graphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
+					&& !U->graphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2)))
 				{
 					Z->addNodePair(pairScore->getPair());
 					A0i->addNodePair(pairScore->getPair());

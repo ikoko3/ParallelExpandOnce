@@ -57,7 +57,7 @@ namespace csr {
 		deque<NodePair*> getDifference(MatchedPairsSet* pairsSet);
 
 		set<int>* getNodesForGraph(int graph);
-		bool GraphContainsNode(int graph, int nodeId);
+		bool graphContainsNode(int graph, int nodeId);
 
 		void print();
 		void printAccuracy();

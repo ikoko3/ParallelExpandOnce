@@ -33,7 +33,7 @@ namespace gh
 		return file;
 	}
 
-	csr::Graph* CreateGraphFromFile(string fileName, int skipLinesCount)
+	csr::Graph* createGraphFromFile(string fileName, int skipLinesCount)
 	{
 		std::cout << "Creating graph from file: " + fileName << endl;
 	
@@ -86,7 +86,7 @@ namespace gh
 		return new csr::Graph(csrNodes, csrEdges);
 	}
 
-	MatchedPairsSet * CreateSeedSetFromFile(string fileName)
+	MatchedPairsSet * createSeedSetFromFile(string fileName)
 	{
 		fstream setFile = OpenFile(fileName);
 		deque<NodePair*> nodeSets;
@@ -106,14 +106,14 @@ namespace gh
 		return new MatchedPairsSet(nodeSets);
 	}
 
-	void CreateNeighbouringPairs(deque<NodePair*> nodePairs, Graph* g1, Graph* g2, map<string, PairMatchingScore*>* pairScores)
+	void createNeighbouringPairs(deque<NodePair*> nodePairs, Graph* g1, Graph* g2, map<string, PairMatchingScore*>* pairScores)
 	{
 		for (auto &nodeSet : nodePairs) 
-			CreateNeighbouringPairs(nodeSet, g1, g2, pairScores);
+			createNeighbouringPairs(nodeSet, g1, g2, pairScores);
 		
 	}
 
-	void CreateNeighbouringPairs(NodePair * nodePair, Graph * g1, Graph * g2, map<string, PairMatchingScore*>* pairScores)
+	void createNeighbouringPairs(NodePair * nodePair, Graph * g1, Graph * g2, map<string, PairMatchingScore*>* pairScores)
 	{
 		vector<int>* g1edges = g1->getNeighboursFor(nodePair->getNodeId(graph1));
 		vector<int>* g2edges = g1->getNeighboursFor(nodePair->getNodeId(graph2));
@@ -141,6 +141,23 @@ namespace gh
 
 		delete g1edges;
 		delete g2edges;
+	}
+
+	void removeUsedNeighbouringPairs(Graph * g1, Graph * g2, map<string, PairMatchingScore*>* pairScores, MatchedPairsSet* M)
+	{
+		list<string> keysToRemove;
+
+		for (auto it = pairScores->cbegin(); it != pairScores->cend() /* not hoisted */; /* no increment */)
+		{
+			auto pairScore = it->second;
+			if (M->graphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
+				|| M->graphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2)))
+				it = pairScores->erase(it);
+			else
+				++it;
+			
+		}
+
 	}
 
 

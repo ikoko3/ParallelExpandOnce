@@ -57,7 +57,7 @@ NodePair * PairMatchingScore::getPair()
 
 string NodePair::getKey()
 {
-	return to_string(g1NodeId) + to_string(g2NodeId);
+	return to_string(g1NodeId) + "-"+ to_string(g2NodeId);
 }
 
 int NodePair::getNodeId(int graph)
@@ -141,18 +141,19 @@ set<NodePair*>* GetSetFromDeque(deque<NodePair*> nodePairs) {
 
 deque<NodePair*> MatchedPairsSet::getDifference(MatchedPairsSet * pairsSet)
 {
-	map<string, NodePair*> existingPairs;
+	map<string, NodePair*>* existingPairs = new map<string, NodePair*>();
 	for (auto pair : NodePairs) {
-		existingPairs[pair->getKey()] = pair;
+		(*existingPairs)[pair->getKey()] = pair;
 	}
 	deque<NodePair*> pairsDifference;
 
 	for (auto pair : pairsSet->getNodeSets()) {
-		auto it = existingPairs.find(pair->getKey());
-		if (it == existingPairs.end())
+		auto it = existingPairs->find(pair->getKey());
+		if (it == existingPairs->end())
 			pairsDifference.push_back(pair);
 	}
 
+	delete existingPairs;
 	return pairsDifference;
 }
 
@@ -184,7 +185,7 @@ set<int>* MatchedPairsSet::getNodesForGraph(int graph)
 	return nodes;
 }
 
-bool MatchedPairsSet::GraphContainsNode(int graph, int nodeId)
+bool MatchedPairsSet::graphContainsNode(int graph, int nodeId)
 {
 	for (auto nodeSet : NodePairs) 
 		if (nodeSet->getNodeId(graph) == nodeId)

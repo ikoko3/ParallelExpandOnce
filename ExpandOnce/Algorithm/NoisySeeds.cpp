@@ -20,55 +20,62 @@ MatchedPairsSet* NoisySeedsSerial::run()
 {
 	cout << "Starting Serial Noisy Seeds with threshold " << Threshold << endl;
 
-	MatchedPairsSet* matchedPairs = new MatchedPairsSet();
-	matchedPairs->addMatchedPairs(SeedSet);
+	MatchedPairsSet* M = new MatchedPairsSet();
+	M->addMatchedPairs(SeedSet);
 	
 
 	auto pairScores = new map<string, PairMatchingScore*>();
 
-	gh::CreateNeighbouringPairs(SeedSet->getNodeSets(), Graph1, Graph2,pairScores);
+	gh::createNeighbouringPairs(SeedSet->getNodeSets(), Graph1, Graph2,pairScores);
 	for (auto pairMapItem : *pairScores) {
 		auto pairScore = pairMapItem.second;
 		if (pairScore->getScore() >= Threshold
-			&& !matchedPairs->GraphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
-			&& !matchedPairs->GraphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2)))
+			&& !M->graphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
+			&& !M->graphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2)))
 		{
-			matchedPairs->addNodePair(pairScore->getPair());
+			M->addNodePair(pairScore->getPair());
 		}
 	}
 
-	MatchedPairsSet* usedPairs = new MatchedPairsSet();
-	usedPairs->addMatchedPairs(SeedSet);
+	MatchedPairsSet* Z = new MatchedPairsSet();
+	Z->addMatchedPairs(SeedSet);
 
-	auto diff = usedPairs->getDifference(matchedPairs);
+    gh::removeUsedNeighbouringPairs(Graph1,Graph2,pairScores,M);
+
+	auto diff = Z->getDifference(M);
+	int counter = 0;
 	srand(time(NULL));
-	bool foundAtLeastOneOverThreshold = true;
-	while (diff.size() > 0 && foundAtLeastOneOverThreshold) {
-		auto randomPair = diff[rand() % (diff.size() - 1)];
-		usedPairs->addNodePair(randomPair);
+	while (diff.size() > 0) {
+		auto randomPair = diff[rand() % diff.size()];
+		Z->addNodePair(randomPair);
 
-		gh::CreateNeighbouringPairs(randomPair, Graph1, Graph2, pairScores);
-		foundAtLeastOneOverThreshold = false;
+		gh::createNeighbouringPairs(randomPair, Graph1, Graph2, pairScores);
+
 		for (auto pairMapItem : *pairScores) {
 			auto pairScore = pairMapItem.second;
 			if (pairScore->getScore() >= Threshold
-				&& !matchedPairs->GraphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
-				&& !matchedPairs->GraphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2)))
+				&& !M->graphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
+				&& !M->graphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2)))
 			{
-				matchedPairs->addNodePair(pairScore->getPair());
-				foundAtLeastOneOverThreshold = true;
+				M->addNodePair(pairScore->getPair());
 			}
 		}
-		diff = usedPairs->getDifference(matchedPairs);
+		diff = Z->getDifference(M);
+
+		if (counter % 25 == 0) {
+			gh::removeUsedNeighbouringPairs(Graph1, Graph2, pairScores, M);
+		}
+			
+		counter++;
 	}
 
-	delete usedPairs;
+	delete Z;
 	for (auto pair : *pairScores) {
 		delete pair.second;
 	}
 	delete pairScores;
 
-	return matchedPairs;
+	return M;
 }
 
 MatchedPairsSet* alg::NoisySeedsParallel::run()
