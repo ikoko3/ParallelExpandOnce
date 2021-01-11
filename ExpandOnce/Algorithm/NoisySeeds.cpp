@@ -51,22 +51,24 @@ MatchedPairsSet* NoisySeedsSerial::run()
 
 		gh::createNeighbouringPairs(randomPair, Graph1, Graph2, pairScores);
 
-		for (auto pairMapItem : *pairScores) {
-			auto pairScore = pairMapItem.second;
-			if (pairScore->getScore() >= Threshold
-				&& !M->graphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
+		for (auto it = pairScores->cbegin(); it != pairScores->cend();)
+		{
+			auto pairScore = it->second;
+
+			if (!M->graphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
 				&& !M->graphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2)))
 			{
-				M->addNodePair(pairScore->getPair());
+				if (pairScore->getScore() >= Threshold) 
+					M->addNodePair(pairScore->getPair());
+				++it;
 			}
+			else {
+				delete pairScore;
+				it = pairScores->erase(it);
+			}	
 		}
-		diff = Z->getDifference(M);
 
-		if (counter % 25 == 0) {
-			gh::removeUsedNeighbouringPairs(Graph1, Graph2, pairScores, M);
-		}
-			
-		counter++;
+		diff = Z->getDifference(M);
 	}
 
 	delete Z;

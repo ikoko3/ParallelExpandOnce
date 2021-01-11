@@ -151,8 +151,11 @@ namespace gh
 		{
 			auto pairScore = it->second;
 			if (M->graphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
-				|| M->graphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2)))
+				|| M->graphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2))) {
+				delete it->second;
 				it = pairScores->erase(it);
+			}
+				
 			else
 				++it;
 			

@@ -85,14 +85,11 @@ bool csr::NodePair::valuesAreMatched()
 
 MatchedPairsSet::MatchedPairsSet()
 {
-	Graph1Nodes = nullptr;
-	Graph2Nodes = nullptr;
+
 }
 
 MatchedPairsSet::MatchedPairsSet(deque<NodePair*> pairsSet)
 {
-	Graph1Nodes = nullptr;
-	Graph2Nodes = nullptr;
 	NodePairs = pairsSet;
 }
 
@@ -103,8 +100,6 @@ MatchedPairsSet::MatchedPairsSet(MatchedPairsSet* pairsSet)
 
 MatchedPairsSet::~MatchedPairsSet()
 {
-	if (Graph1Nodes != nullptr) delete Graph1Nodes;
-	if (Graph2Nodes != nullptr) delete Graph2Nodes;
 	for (auto pair : NodePairs) {
 		delete pair;
 	}
@@ -118,12 +113,14 @@ deque<NodePair*> MatchedPairsSet::getNodeSets()
 void MatchedPairsSet::addNodePair(NodePair* nodePair)
 {
 	NodePairs.push_back(new NodePair(*nodePair));
+	Graph1Nodes.insert(nodePair->getNodeId(graph1));
+	Graph2Nodes.insert(nodePair->getNodeId(graph2));
 }
 
 void MatchedPairsSet::addMatchedPairs(deque<NodePair*> matchedPairs)
 {
-	for (auto const pair : matchedPairs) 
-		NodePairs.push_back(new NodePair(*pair));
+	for (auto const pair : matchedPairs)
+		addNodePair(pair);
 }
 
 void MatchedPairsSet::addMatchedPairs(MatchedPairsSet* pairsSet)
@@ -157,24 +154,6 @@ deque<NodePair*> MatchedPairsSet::getDifference(MatchedPairsSet * pairsSet)
 	return pairsDifference;
 }
 
-void MatchedPairsSet::LoadNodesForGraph(int graph) {
-	auto nodes = new set<int>;
-	for (auto nodeSet : NodePairs) {
-		nodes->insert(nodeSet->getNodeId(graph));
-	}
-
-	switch (graph) {
-	case graph1:
-		Graph1Nodes = nodes;
-		break;
-	case graph2:
-		Graph2Nodes = nodes;
-		break;
-	default:
-		throw graph;
-	}
-}
-
 
 set<int>* MatchedPairsSet::getNodesForGraph(int graph)
 {
@@ -187,11 +166,12 @@ set<int>* MatchedPairsSet::getNodesForGraph(int graph)
 
 bool MatchedPairsSet::graphContainsNode(int graph, int nodeId)
 {
-	for (auto nodeSet : NodePairs) 
-		if (nodeSet->getNodeId(graph) == nodeId)
-			return true;
-	
-	return false;
+	switch (graph) {
+	case graph1:
+		return Graph1Nodes.find(nodeId) != Graph1Nodes.end();
+	case graph2:
+		return Graph2Nodes.find(nodeId) != Graph2Nodes.end();
+	}
 }
 
 void MatchedPairsSet::print()

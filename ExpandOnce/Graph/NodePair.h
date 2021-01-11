@@ -62,10 +62,9 @@ namespace csr {
 		void print();
 		void printAccuracy();
 	private:
-		void MatchedPairsSet::LoadNodesForGraph(int graph);
 		deque<NodePair*> NodePairs;
 
-		set<int>* Graph1Nodes;
-		set<int>* Graph2Nodes;
+		set<int> Graph1Nodes;
+		set<int> Graph2Nodes;
 	};
 }
