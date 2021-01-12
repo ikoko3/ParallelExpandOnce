@@ -116,7 +116,7 @@ namespace gh
 	void createNeighbouringPairs(NodePair * nodePair, Graph * g1, Graph * g2, map<string, PairMatchingScore*>* pairScores)
 	{
 		vector<int>* g1edges = g1->getNeighboursFor(nodePair->getNodeId(graph1));
-		vector<int>* g2edges = g1->getNeighboursFor(nodePair->getNodeId(graph2));
+		vector<int>* g2edges = g2->getNeighboursFor(nodePair->getNodeId(graph2));
 
 		for (auto &g1edge : *g1edges) {
 			for (auto &g2edge : *g2edges) {
@@ -135,7 +135,7 @@ namespace gh
 					pairScore->incrementScore();
 				}
 
-				//pairScore->Print();
+				//pairScore->print();
 			}
 		}
 

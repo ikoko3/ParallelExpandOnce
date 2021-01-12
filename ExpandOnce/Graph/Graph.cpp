@@ -15,7 +15,8 @@ csr::Graph::~Graph()
 
 vector<int>* csr::Graph::getNeighboursFor(int nodeIndex)
 {
-	auto const node = nodes[nodes.size() - nodeIndex - 1]; //The indexes are reversed
+	//cout << nodes.size() - nodeIndex  << endl;
+	auto const node = nodes[nodes.size() - nodeIndex -1]; //The indexes are reversed
 	vector<int>::const_iterator first = edges.begin() + node->get_starts();
 	vector<int>::const_iterator last = edges.begin() + node->get_ends();
 	

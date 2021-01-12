@@ -193,7 +193,7 @@ void csr::MatchedPairsSet::printAccuracy()
 	}
 	float accuracy = (float)correct / (float)NodePairs.size();
 
-	cout <<"Accuracy: "<< accuracy << " ("<< correct <<"/"<< NodePairs.size()<<")"<< endl;
+	cout <<"Accuracy: "<< accuracy*100 << "% ("<< correct <<"/"<< NodePairs.size()<<")"<< endl;
 }
 
 bool csr::operator<( NodePair  &left,  NodePair &right)

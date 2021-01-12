@@ -12,6 +12,7 @@
 #include <string>
 #include <chrono>
 #include "Graph/Graph.h"
+#include "SandBox.h"
 #include "Helpers/GraphHelper.hpp"
 #include "Config/GraphFilesConfig.hpp"
 #include "Algorithm/NoisySeeds.h"
@@ -39,12 +40,16 @@ using namespace std;
 using namespace tbb;
 
 
-static const int threshold = 2;
-static const int seedSize = 3;
+static const int threshold = 6;
+static const int seedSize = 9;
 
 using namespace csr;
 
+
+
 int main() {
+
+
 	Graph* graph1 = gh::createGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph1), GraphFilesConfig::LINES_TO_SKIP);
 	Graph* graph2 = gh::createGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph2), GraphFilesConfig::LINES_TO_SKIP);
 	MatchedPairsSet* set = gh::createSeedSetFromFile(GraphFilesConfig::getNoisySeedSetName());
@@ -54,6 +59,8 @@ int main() {
 	auto matchedValues = expandOnce.run();
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
+	
+	//matchedValues->print();
 	matchedValues->printAccuracy();
 	std::cout << "Total time: " << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << "[ms]" << std::endl;
 

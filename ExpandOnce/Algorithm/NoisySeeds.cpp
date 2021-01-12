@@ -80,16 +80,12 @@ MatchedPairsSet* NoisySeedsSerial::run()
 	return M;
 }
 
-MatchedPairsSet* alg::NoisySeedsParallel::run()
-{
-	//not implemented yet
-	throw;
-}
+
 
 
 
 MatchedPairsSet* alg::NoisySeeds::run()
 {
-	//only for overide
+	//abstract
 	throw;
 }

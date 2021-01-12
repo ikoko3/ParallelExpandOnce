@@ -11,6 +11,8 @@
     <ClCompile Include="Graph\NodePair.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="Algorithm\ExpandOnce.cpp" />
+    <ClCompile Include="SandBox.cpp" />
+    <ClCompile Include="Algorithm\NoisySeedsParallel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config\GraphFilesConfig.hpp" />
@@ -20,6 +22,7 @@
     <ClInclude Include="Algorithm\NoisySeeds.h" />
     <ClInclude Include="Graph\NodePair.h" />
     <ClInclude Include="Algorithm\ExpandOnce.h" />
+    <ClInclude Include="SandBox.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\CLionProjects\graph_matching\graph1.adjlist" />
