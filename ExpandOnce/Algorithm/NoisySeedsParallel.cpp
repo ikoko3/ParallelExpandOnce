@@ -1,5 +1,6 @@
 #include <deque>
 #include <time.h> 
+#include <chrono>
 #include "NoisySeeds.h"
 #include "../Helpers/GraphHelper.hpp"
 #include "tbb/concurrent_hash_map.h"
@@ -8,36 +9,6 @@
 
 using namespace tbb;
 
-
-void createNeighbouringPairs(NodePair * nodePair, Graph * g1, Graph * g2, map<string, PairMatchingScore*>* pairScores)
-{
-	vector<int>* g1edges = g1->getNeighboursFor(nodePair->getNodeId(graph1));
-	vector<int>* g2edges = g1->getNeighboursFor(nodePair->getNodeId(graph2));
-
-	for (auto &g1edge : *g1edges) {
-		for (auto &g2edge : *g2edges) {
-			auto pair = new NodePair(g1edge, g2edge);
-			auto pairKey = pair->getKey();
-
-			auto it = pairScores->find(pairKey);
-			PairMatchingScore* pairScore;
-
-			if (it == pairScores->end()) {
-				pairScore = new PairMatchingScore(pair);
-				(*pairScores)[pairKey] = pairScore;
-			}
-			else {
-				pairScore = it->second;
-				pairScore->incrementScore();
-			}
-
-			//pairScore->Print();
-		}
-	}
-
-	delete g1edges;
-	delete g2edges;
-}
 
 struct MyHashCompare {
 	static size_t hash(const string& x) {
@@ -55,35 +26,105 @@ struct MyHashCompare {
 
 typedef concurrent_hash_map<string, PairMatchingScore*, MyHashCompare> PairScores;
 
-// Function object for counting occurrences of strings.
-struct VoteNeighbours {
-	PairScores& table;
-	VoteNeighbours(PairScores& table_) : table(table_) {}
-	void operator()(const blocked_range<string*> range) const {
-		for (string* p = range.begin(); p != range.end(); ++p) {
-			PairScores::accessor a;
-			/*table.insert(a, *p);
-			a->second += 1;*/
-		}
+void voteNeighbouringEdges(int g1edge, vector<int>* g2edges,PairScores* pairScores) {
+
+		for (auto &g2edge : *g2edges) {
+			auto pair = new NodePair(g1edge, g2edge);
+			auto pairKey = pair->getKey();
+
+			PairScores::accessor acc;
+			auto found = pairScores->find(acc, pairKey);
+			if (!found) {
+				pairScores->insert(acc, pairKey);
+				acc->second = new PairMatchingScore(pair);;
+				//cout << "Key " << pairKey << " not found" << endl;
+			}
+			else {
+				acc->second->incrementScore();
+			}
+		}	
+}
+
+struct ApplyVotes {
+	vector<int>* const _g1edges;
+	vector<int>* const _g2edges;
+	PairScores* const _pairScores;
+public:
+	void operator()(const blocked_range<size_t>& r) const {
+		vector<int>* edges = _g1edges;
+		for (size_t i = r.begin(); i != r.end(); ++i)
+			voteNeighbouringEdges((*edges)[i],_g2edges,_pairScores);
 	}
+	ApplyVotes(vector<int>* g1edges, vector<int>* g2edges,PairScores* pairScores) : 
+		_g1edges(g1edges),_g2edges(g2edges),_pairScores(pairScores){}
 };
+
+void ParallelVoteNeighbours(vector<int>* g1edges, size_t n,vector<int>* g2edges, PairScores* pairScores) {
+	parallel_for(blocked_range<size_t>(0, n), ApplyVotes(g1edges,g2edges,pairScores));
+}
+
+
+void createNeighbouringPairs(NodePair * nodePair, Graph * g1, Graph * g2, PairScores* pairScores)
+{
+	PairScores table;
+
+	vector<int>* g1edges = g1->getNeighboursFor(nodePair->getNodeId(graph1));
+	vector<int>* g2edges = g1->getNeighboursFor(nodePair->getNodeId(graph2));
+
+	ParallelVoteNeighbours(g1edges,g1edges->size(), g2edges,pairScores);
+
+	delete g1edges;
+	delete g2edges;
+}
+
+void createNeighbouringPairs(deque<NodePair*> nodePairs, Graph* g1, Graph* g2, PairScores* pairScores)
+{
+	for (auto &nodeSet : nodePairs)
+		createNeighbouringPairs(nodeSet, g1, g2, pairScores);
+
+
+	PairScores::iterator it = pairScores->begin();
+	//while ( it != pairScores->end()) {
+	//	it->second->print();
+	//	it++;
+	//}
+}
+
 
 
 MatchedPairsSet* alg::NoisySeedsParallel::run()
 {
-	//cout << "Starting Parallel Noisy Seeds with threshold " << Threshold << endl;
 
-	//MatchedPairsSet* M = new MatchedPairsSet();
-	//M->addMatchedPairs(SeedSet);
+	cout << "Starting Parallel Noisy Seeds with threshold " << Threshold << endl;
 
-	//vector<int>* g1edges = g1->getNeighboursFor(nodePair->getNodeId(graph1));
-	//vector<int>* g2edges = g1->getNeighboursFor(nodePair->getNodeId(graph2));
+	MatchedPairsSet* M = new MatchedPairsSet();
+	M->addMatchedPairs(SeedSet);
+
+	std::chrono::steady_clock::time_point beginp = std::chrono::steady_clock::now();
+	auto pairScores = new PairScores();
+	createNeighbouringPairs(SeedSet->getNodeSets(), Graph1, Graph2, pairScores);
+	std::chrono::steady_clock::time_point endp = std::chrono::steady_clock::now();
+
+	std::chrono::steady_clock::time_point begins = std::chrono::steady_clock::now();
+	auto pairScores1 = new map<string, PairMatchingScore*>();
+	gh::createNeighbouringPairs(SeedSet->getNodeSets(), Graph1, Graph2, pairScores1);
+	std::chrono::steady_clock::time_point ends = std::chrono::steady_clock::now();
 
 
-	/*auto pairScores = new map<string, PairMatchingScore*>();
+	std::cout << "Total time PARALLEL: " << std::chrono::duration_cast<std::chrono::milliseconds> (endp - beginp).count() << "[ms]" << std::endl;
+	std::cout << "Total time SERIAL: " << std::chrono::duration_cast<std::chrono::milliseconds> (ends - begins).count() << "[ms]" << std::endl;
 
-	gh::createNeighbouringPairs(SeedSet->getNodeSets(), Graph1, Graph2, pairScores);
-	for (auto pairMapItem : *pairScores) {
+
+	cout << "--------------SERIAL PAIRS-------------" << endl;
+
+
+	/*map<string, PairMatchingScore*>::iterator it = pairScores1->begin();
+	while (it != pairScores1->end()) {
+		it->second->print();
+		it++;
+	}*/
+
+	/*for (auto pairMapItem : *pairScores) {
 		auto pairScore = pairMapItem.second;
 		if (pairScore->getScore() >= Threshold
 			&& !M->graphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))

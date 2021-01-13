@@ -1,5 +1,8 @@
 #include "SandBox.h"
 
+#include "Algorithm\NoisySeeds.h"
+#include "Helpers/GraphHelper.hpp"
+
 #include "tbb/concurrent_hash_map.h"
 #include "tbb/blocked_range.h"
 #include "tbb/parallel_for.h"
@@ -24,15 +27,15 @@ struct MyHashCompare {
 };
 
 // A concurrent hash table that maps strings to ints.
-typedef concurrent_hash_map<string, int, MyHashCompare> PairScores;
+typedef concurrent_hash_map<string, int, MyHashCompare> MyMap;
 
 // Function object for counting occurrences of strings.
-struct VoteNeighbours {
-	PairScores& table;
-	VoteNeighbours(PairScores& table_) : table(table_) {}
+struct Tally {
+	MyMap& table;
+	Tally(MyMap& table_) : table(table_) {}
 	void operator()(const blocked_range<string*> range) const {
 		for (string* p = range.begin(); p != range.end(); ++p) {
-			PairScores::accessor a;
+			MyMap::accessor a;
 			table.insert(a, *p);
 			a->second += 1;
 		}
@@ -43,16 +46,17 @@ const size_t N = 1000000;
 
 string Data[N];
 
+
 void CountOccurrences() {
 	// Construct empty table.
-	PairScores table;
+	MyMap table;
 
 	// Put occurrences into the table
 	parallel_for(blocked_range<string*>(Data, Data + N, 100),
-		VoteNeighbours(table));
+		Tally(table));
 
 	// Display the occurrences
-	for (PairScores::iterator i = table.begin(); i != table.end(); ++i)
+	for (MyMap::iterator i = table.begin(); i != table.end(); ++i)
 		printf("%s %d\n", i->first.c_str(), i->second);
 }
 
@@ -63,21 +67,21 @@ void Foo(int t) {
 	printf("%d-%d\n",t,worker_index);
 }
 
-class ApplyFoo {
-	int *const my_a;
+class ApplyVotes {
+	int *const _g1edges;
 public:
 	void operator()(const blocked_range<size_t>& r) const {
-		int *a = my_a;
+		int *a = _g1edges;
 		for (size_t i = r.begin(); i != r.end(); ++i)
 			Foo(a[i]);
 	}
-	ApplyFoo(int a[]) :
-		my_a(a)
+	ApplyVotes(int a[]) :
+		_g1edges(a)
 	{}
 };
 
 void ParallelApplyFoo(int a[], size_t n) {
-	parallel_for(blocked_range<size_t>(0, n), ApplyFoo(a));
+	parallel_for(blocked_range<size_t>(0, n), ApplyVotes(a));
 }
 
 void main1() {
@@ -91,3 +95,6 @@ void main1() {
 
 
 }
+
+
+

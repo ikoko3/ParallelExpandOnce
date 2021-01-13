@@ -55,13 +55,16 @@ int main() {
 	MatchedPairsSet* set = gh::createSeedSetFromFile(GraphFilesConfig::getNoisySeedSetName());
 
 	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-	alg::ExpandOnceSerial expandOnce(graph1, graph2, threshold, seedSize, set);
-	auto matchedValues = expandOnce.run();
+	//alg::ExpandOnceSerial expandOnce(graph1, graph2, threshold, seedSize, set);
+	//auto matchedValues = expandOnce.run();
+
+	alg::NoisySeedsParallel noisySeeds(graph1, graph2, threshold, set);
+	auto matchedValues = noisySeeds.run();
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
 	
 	//matchedValues->print();
-	matchedValues->printAccuracy();
+	//matchedValues->printAccuracy();
 	std::cout << "Total time: " << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << "[ms]" << std::endl;
 
 
