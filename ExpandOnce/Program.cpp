@@ -40,7 +40,7 @@ using namespace std;
 using namespace tbb;
 
 
-static const int threshold = 2;
+static const int threshold = 3;
 static const int seedSize = 5;
 
 using namespace csr;
