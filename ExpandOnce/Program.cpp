@@ -40,37 +40,73 @@ using namespace std;
 using namespace tbb;
 
 
-static const int threshold = 6;
-static const int seedSize = 9;
+static const int threshold = 2;
+static const int seedSize = 5;
 
 using namespace csr;
 
 
+void compareNoisySeedsImplementations() {
+	Graph* graph1 = gh::createGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph1), GraphFilesConfig::LINES_TO_SKIP);
+	Graph* graph2 = gh::createGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph2), GraphFilesConfig::LINES_TO_SKIP);
+	MatchedPairsSet* set = gh::createSeedSetFromFile(GraphFilesConfig::getNoisySeedSetName());
 
-int main() {
+	std::chrono::steady_clock::time_point beginS = std::chrono::steady_clock::now();
+	alg::NoisySeedsSerial noisySeeedsS(graph1, graph2, threshold, set);
+	auto matchedValuesS = noisySeeedsS.run();
+	std::chrono::steady_clock::time_point endS = std::chrono::steady_clock::now();
+
+	std::chrono::steady_clock::time_point beginP = std::chrono::steady_clock::now();
+	alg::NoisySeedsParallel noisySeedsP(graph1, graph2, threshold, set);
+	auto matchedValuesP = noisySeedsP.run();
+	std::chrono::steady_clock::time_point endP = std::chrono::steady_clock::now();
+	
 
 
+	cout << "SERIAL: ";
+	matchedValuesS->printAccuracy();
+	cout << "PARALLEL: ";
+	matchedValuesP->printAccuracy();
+
+	std::cout << "SERIAL: " << std::chrono::duration_cast<std::chrono::milliseconds> (endS - beginS).count() << "[ms]" << std::endl;
+	std::cout << "PARALLEL: " << std::chrono::duration_cast<std::chrono::milliseconds> (endP - beginP).count() << "[ms]" << std::endl;
+
+
+	delete matchedValuesS;
+	delete matchedValuesP;
+	delete set;
+	delete graph1;
+	delete graph2;
+}
+
+void runExpandOnce() {
 	Graph* graph1 = gh::createGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph1), GraphFilesConfig::LINES_TO_SKIP);
 	Graph* graph2 = gh::createGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph2), GraphFilesConfig::LINES_TO_SKIP);
 	MatchedPairsSet* set = gh::createSeedSetFromFile(GraphFilesConfig::getNoisySeedSetName());
 
 	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-	//alg::ExpandOnceSerial expandOnce(graph1, graph2, threshold, seedSize, set);
-	//auto matchedValues = expandOnce.run();
-
+	/*alg::ExpandOnceSerial expandOnce(graph1, graph2, threshold, seedSize, set);
+	auto matchedValues = expandOnce.run();
+*/
 	alg::NoisySeedsParallel noisySeeds(graph1, graph2, threshold, set);
 	auto matchedValues = noisySeeds.run();
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
-	
-	//matchedValues->print();
-	//matchedValues->printAccuracy();
+
+	matchedValues->print();
+	matchedValues->printAccuracy();
 	std::cout << "Total time: " << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << "[ms]" << std::endl;
 
 
 	delete matchedValues;
 	delete set;
 	delete graph1;
-	delete graph2;	
+	delete graph2;
+}
+
+int main() {
+
+	compareNoisySeedsImplementations();
+	
 }
 

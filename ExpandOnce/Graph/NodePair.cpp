@@ -8,9 +8,6 @@ using namespace std;
 
 NodePair::NodePair(string g1Name, string g2Name)
 {
-	g1NodeName = g1Name;
-	g2NodeName = g2Name;
-
 	g1NodeId = stoi(g1Name);
 	g2NodeId = stoi(g2Name);
 }
@@ -19,9 +16,6 @@ csr::NodePair::NodePair(int g1Node, int g2Node)
 {
 	g1NodeId = g1Node;
 	g2NodeId = g2Node;
-
-	g1NodeName = to_string(g1Node);
-	g2NodeName = to_string(g2Node);
 }
 
 PairMatchingScore::PairMatchingScore(NodePair* pair)
@@ -74,7 +68,7 @@ int NodePair::getNodeId(int graph)
 
 void NodePair::print()
 {
-	cout << "G1:(" << g1NodeName << "/" << g1NodeId << "),G2:(" << g2NodeName << "/" << g2NodeId << ")" << endl;
+	cout << "G1:(" <<  g1NodeId << "),G2:(" << g2NodeId << ")" << endl;
 }
 
 bool csr::NodePair::valuesAreMatched()
@@ -177,7 +171,7 @@ bool MatchedPairsSet::graphContainsNode(int graph, int nodeId)
 void MatchedPairsSet::print()
 {
 	cout << endl << "-------------Printing Matched Pairs Set-------------" << endl;
-	cout << "G1:(Name/Id),G2(Name:Id)" << endl;
+	cout << "G1:(Id),G2:(Id)" << endl;
 	for (auto node : NodePairs) {
 		node->print();
 	}

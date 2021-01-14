@@ -36,6 +36,7 @@ MatchedPairsSet* NoisySeedsSerial::run()
 			M->addNodePair(pairScore->getPair());
 		}
 	}
+	//M->print();
 
 	MatchedPairsSet* Z = new MatchedPairsSet();
 	Z->addMatchedPairs(SeedSet);
@@ -66,8 +67,8 @@ MatchedPairsSet* NoisySeedsSerial::run()
 				delete pairScore;
 				it = pairScores->erase(it);
 			}	
+			
 		}
-
 		diff = Z->getDifference(M);
 	}
 

@@ -10,6 +10,9 @@
 using namespace tbb;
 
 
+
+
+
 struct MyHashCompare {
 	static size_t hash(const string& x) {
 		size_t h = 0;
@@ -23,8 +26,8 @@ struct MyHashCompare {
 	}
 };
 
-
 typedef concurrent_hash_map<string, PairMatchingScore*, MyHashCompare> PairScores;
+
 
 void voteNeighbouringEdges(int g1edge, vector<int>* g2edges,PairScores* pairScores) {
 
@@ -37,13 +40,24 @@ void voteNeighbouringEdges(int g1edge, vector<int>* g2edges,PairScores* pairScor
 			if (!found) {
 				pairScores->insert(acc, pairKey);
 				acc->second = new PairMatchingScore(pair);;
-				//cout << "Key " << pairKey << " not found" << endl;
 			}
 			else {
 				acc->second->incrementScore();
 			}
 		}	
 }
+
+void removeUsedNeighbouringPairs(Graph * g1, Graph * g2, PairScores* pairScores, MatchedPairsSet* M)
+{
+	PairScores::iterator it = pairScores->begin();
+	while (it != pairScores->end()) {
+		PairScores::accessor acc;
+		delete it->second;
+		pairScores->erase(acc);
+		it++;
+	}
+}
+
 
 struct ApplyVotes {
 	vector<int>* const _g1edges;
@@ -84,10 +98,12 @@ void createNeighbouringPairs(deque<NodePair*> nodePairs, Graph* g1, Graph* g2, P
 
 
 	PairScores::iterator it = pairScores->begin();
+	//cout << "_____________" << endl;
 	//while ( it != pairScores->end()) {
 	//	it->second->print();
 	//	it++;
 	//}
+	//cout << "_____________" << endl;
 }
 
 
@@ -100,31 +116,9 @@ MatchedPairsSet* alg::NoisySeedsParallel::run()
 	MatchedPairsSet* M = new MatchedPairsSet();
 	M->addMatchedPairs(SeedSet);
 
-	std::chrono::steady_clock::time_point beginp = std::chrono::steady_clock::now();
 	auto pairScores = new PairScores();
 	createNeighbouringPairs(SeedSet->getNodeSets(), Graph1, Graph2, pairScores);
-	std::chrono::steady_clock::time_point endp = std::chrono::steady_clock::now();
-
-	std::chrono::steady_clock::time_point begins = std::chrono::steady_clock::now();
-	auto pairScores1 = new map<string, PairMatchingScore*>();
-	gh::createNeighbouringPairs(SeedSet->getNodeSets(), Graph1, Graph2, pairScores1);
-	std::chrono::steady_clock::time_point ends = std::chrono::steady_clock::now();
-
-
-	std::cout << "Total time PARALLEL: " << std::chrono::duration_cast<std::chrono::milliseconds> (endp - beginp).count() << "[ms]" << std::endl;
-	std::cout << "Total time SERIAL: " << std::chrono::duration_cast<std::chrono::milliseconds> (ends - begins).count() << "[ms]" << std::endl;
-
-
-	cout << "--------------SERIAL PAIRS-------------" << endl;
-
-
-	/*map<string, PairMatchingScore*>::iterator it = pairScores1->begin();
-	while (it != pairScores1->end()) {
-		it->second->print();
-		it++;
-	}*/
-
-	/*for (auto pairMapItem : *pairScores) {
+	for (auto pairMapItem : *pairScores) {
 		auto pairScore = pairMapItem.second;
 		if (pairScore->getScore() >= Threshold
 			&& !M->graphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
@@ -133,11 +127,12 @@ MatchedPairsSet* alg::NoisySeedsParallel::run()
 			M->addNodePair(pairScore->getPair());
 		}
 	}
+	//M->print();
 
 	MatchedPairsSet* Z = new MatchedPairsSet();
 	Z->addMatchedPairs(SeedSet);
 
-	gh::removeUsedNeighbouringPairs(Graph1, Graph2, pairScores, M);
+	//gh::removeUsedNeighbouringPairs(Graph1, Graph2, pairScores, M);
 
 	auto diff = Z->getDifference(M);
 	int counter = 0;
@@ -146,10 +141,11 @@ MatchedPairsSet* alg::NoisySeedsParallel::run()
 		auto randomPair = diff[rand() % diff.size()];
 		Z->addNodePair(randomPair);
 
-		gh::createNeighbouringPairs(randomPair, Graph1, Graph2, pairScores);
+		createNeighbouringPairs(randomPair, Graph1, Graph2, pairScores);
 
-		for (auto it = pairScores->cbegin(); it != pairScores->cend();)
+		for (auto it = pairScores->begin(); it != pairScores->end();)
 		{
+			//PairScores::const_accessor score;
 			auto pairScore = it->second;
 
 			if (!M->graphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
@@ -160,11 +156,13 @@ MatchedPairsSet* alg::NoisySeedsParallel::run()
 				++it;
 			}
 			else {
+			/*	auto key = pairScore->getPair()->getKey();
 				delete pairScore;
-				it = pairScores->erase(it);
+				pairScores->erase(key);*/
+				++it;
 			}
+			
 		}
-
 		diff = Z->getDifference(M);
 	}
 
@@ -172,7 +170,7 @@ MatchedPairsSet* alg::NoisySeedsParallel::run()
 	for (auto pair : *pairScores) {
 		delete pair.second;
 	}
-	delete pairScores;*/
+	delete pairScores;
 
-	return nullptr;
+	return M;
 }

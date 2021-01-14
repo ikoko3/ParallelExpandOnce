@@ -19,8 +19,6 @@ namespace csr {
 		friend bool operator< ( NodePair &left,  NodePair &right);
 		bool valuesAreMatched();
 	private:
-		std::string g1NodeName;
-		std::string g2NodeName;
 
 		int g1NodeId;
 		int g2NodeId;
