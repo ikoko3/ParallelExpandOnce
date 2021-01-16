@@ -38,6 +38,8 @@ struct RemoveUnusedPairs {
 	PairScores* const _pairScores;
 public:
 	void operator()(const blocked_range<size_t>& r) const {
+		if (_keys->size() == 0)
+			cout << "empty list" << endl;
 		for (size_t i = r.begin(); i != r.end(); ++i)
 			removeKey((*_keys)[i], _pairScores);
 	}
@@ -83,8 +85,9 @@ void removeUnusedNeighbouringPairs(Graph * g1, Graph * g2, PairScores* pairScore
 
 MatchedPairsSet* alg::NoisySeedsParallel::run()
 {
-
-	cout << "Starting Parallel Noisy Seeds with threshold " << Threshold << endl;
+	int graphSize = Graph1->getNodesCount();
+	cout << "Starting Parallel Noisy Seeds with threshold " << Threshold
+		<< " (" << graphSize << ") Nodes (G1:" << Graph1->getEdgesCount() << "/G2:" << Graph2->getEdgesCount() << ") edges" << endl;
 
 	MatchedPairsSet* M = new MatchedPairsSet();
 	M->addMatchedPairs(SeedSet);
@@ -110,13 +113,15 @@ MatchedPairsSet* alg::NoisySeedsParallel::run()
 	auto diff = Z->getDifference(M);
 	int counter = 0;
 	srand(time(NULL));
+	vector<string>* keysToRemove;
 	while (diff.size() > 0) {
 		auto randomPair = diff[rand() % diff.size()];
 		Z->addNodePair(randomPair);
 
 		createNeighbouringPairs(randomPair, Graph1, Graph2, pairScores);
+		keysToRemove = new vector<string>();
 
-		for (auto it = pairScores->begin(); it != pairScores->end();)
+		for (auto it = pairScores->begin(); it != pairScores->end();it++)
 		{
 			//PairScores::const_accessor score;
 			auto pairScore = it->second;
@@ -126,21 +131,21 @@ MatchedPairsSet* alg::NoisySeedsParallel::run()
 			{
 				if (pairScore->getScore() >= Threshold)
 					M->addNodePair(pairScore->getPair());
-				++it;
 			}
 			else {
-			/*	auto key = pairScore->getPair()->getKey();
-				delete pairScore;
-				pairScores->erase(key);*/
-				++it;
+				keysToRemove->push_back(it->second->getPair()->getKey());
 			}
-			
 		}
-		removeUnusedNeighbouringPairs(Graph1, Graph2, pairScores, M);
 
-		//if (counter % 15 == 0) {
-		//	removeUnusedNeighbouringPairs(Graph1, Graph2, pairScores, M);
-		//}
+		//Reduce
+		parallel_for(blocked_range<size_t>(0, keysToRemove->size()), RemoveUnusedPairs(keysToRemove, pairScores));
+		delete keysToRemove;
+
+		if (counter++ % 100 == 0) {
+			int pairedCount = M->getNodeSets().size();
+			cout << (float) pairedCount/ (float)graphSize * 100 << "% (" << pairedCount <<")" << endl;
+		}
+			
 		diff = Z->getDifference(M);
 	}
 

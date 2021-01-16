@@ -21,3 +21,14 @@ vector<int>* csr::Graph::getNeighboursFor(int nodeIndex)
 	
 	return new vector<int>(first, last);
 }
+
+int csr::Graph::getNodesCount()
+{
+	return nodes.size();
+
+}
+
+int csr::Graph::getEdgesCount()
+{
+	return edges.size();
+}

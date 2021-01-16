@@ -12,6 +12,8 @@ namespace csr {
 		~Graph();
 
 		vector<int>* getNeighboursFor(int nodeIndex);
+		int getNodesCount();
+		int getEdgesCount();
 	private:
 		vector<Node*> nodes;
 		vector<int> edges;

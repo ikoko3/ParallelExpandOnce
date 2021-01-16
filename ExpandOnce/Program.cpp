@@ -40,7 +40,7 @@ using namespace std;
 using namespace tbb;
 
 
-static const int threshold = 3;
+static const int threshold = 4;
 static const int seedSize = 5;
 
 using namespace csr;
@@ -68,7 +68,7 @@ void compareNoisySeedsImplementations() {
 	cout << "PARALLEL: ";
 	matchedValuesP->printAccuracy();
 
-	std::cout << "SERIAL: " << std::chrono::duration_cast<std::chrono::milliseconds> (endS - beginS).count() << "[ms]" << std::endl;
+	std::cout << "SERIAL  : " << std::chrono::duration_cast<std::chrono::milliseconds> (endS - beginS).count() << "[ms]" << std::endl;
 	std::cout << "PARALLEL: " << std::chrono::duration_cast<std::chrono::milliseconds> (endP - beginP).count() << "[ms]" << std::endl;
 
 
