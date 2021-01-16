@@ -41,7 +41,7 @@ MatchedPairsSet* NoisySeedsSerial::run()
 	MatchedPairsSet* Z = new MatchedPairsSet();
 	Z->addMatchedPairs(SeedSet);
 
-    gh::removeUsedNeighbouringPairs(Graph1,Graph2,pairScores,M);
+    gh::removeUnusedNeighbouringPairs(Graph1,Graph2,pairScores,M);
 
 	auto diff = Z->getDifference(M);
 	int counter = 0;

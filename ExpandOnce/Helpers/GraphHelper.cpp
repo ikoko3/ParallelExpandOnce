@@ -11,10 +11,15 @@
 #include <map>
 #include "../Graph/Node.h"
 #include "../Graph/NodePair.h"
+#include "tbb/concurrent_hash_map.h"
+#include "tbb/blocked_range.h"
+#include "tbb/parallel_for.h"
+
 
 
 using namespace std;
 using namespace csr;
+using namespace tbb;
 
 namespace gh
 {
@@ -143,7 +148,7 @@ namespace gh
 		delete g2edges;
 	}
 
-	void removeUsedNeighbouringPairs(Graph * g1, Graph * g2, map<string, PairMatchingScore*>* pairScores, MatchedPairsSet* M)
+	void removeUnusedNeighbouringPairs(Graph * g1, Graph * g2, map<string, PairMatchingScore*>* pairScores, MatchedPairsSet* M)
 	{
 		list<string> keysToRemove;
 
@@ -160,6 +165,64 @@ namespace gh
 				++it;
 			
 		}
+
+	}
+
+	void voteNeighbouringEdges(int g1edge, vector<int>* g2edges, PairScores* pairScores) {
+
+		for (auto &g2edge : *g2edges) {
+			auto pair = new NodePair(g1edge, g2edge);
+			auto pairKey = pair->getKey();
+
+			PairScores::accessor acc;
+			auto found = pairScores->find(acc, pairKey);
+			if (!found) {
+				pairScores->insert(acc, pairKey);
+				acc->second = new PairMatchingScore(pair);;
+			}
+			else {
+				acc->second->incrementScore();
+			}
+		}
+	}
+
+
+	struct ApplyVotes {
+		vector<int>* const _g1edges;
+		vector<int>* const _g2edges;
+		PairScores* const _pairScores;
+	public:
+		void operator()(const blocked_range<size_t>& r) const {
+			vector<int>* edges = _g1edges;
+			for (size_t i = r.begin(); i != r.end(); ++i)
+				voteNeighbouringEdges((*edges)[i], _g2edges, _pairScores);
+		}
+		ApplyVotes(vector<int>* g1edges, vector<int>* g2edges, PairScores* pairScores) :
+			_g1edges(g1edges), _g2edges(g2edges), _pairScores(pairScores) {}
+	};
+
+	void ParallelVoteNeighbours(vector<int>* g1edges, size_t n, vector<int>* g2edges, PairScores* pairScores) {
+		parallel_for(blocked_range<size_t>(0, n), ApplyVotes(g1edges, g2edges, pairScores));
+	}
+
+
+	void createNeighbouringPairs(NodePair * nodePair, Graph * g1, Graph * g2, PairScores* pairScores)
+	{
+		PairScores table;
+
+		vector<int>* g1edges = g1->getNeighboursFor(nodePair->getNodeId(graph1));
+		vector<int>* g2edges = g1->getNeighboursFor(nodePair->getNodeId(graph2));
+
+		ParallelVoteNeighbours(g1edges, g1edges->size(), g2edges, pairScores);
+
+		delete g1edges;
+		delete g2edges;
+	}
+
+	void createNeighbouringPairs(deque<NodePair*> nodePairs, Graph* g1, Graph* g2, PairScores* pairScores)
+	{
+		for (auto &nodeSet : nodePairs)
+			createNeighbouringPairs(nodeSet, g1, g2, pairScores);
 
 	}
 
