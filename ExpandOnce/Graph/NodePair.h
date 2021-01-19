@@ -34,6 +34,7 @@ namespace csr {
 		void incrementScore();
 		int getScore();
 		NodePair* getPair();
+		string getPairKey();
 	private:
 		NodePair* pair;
 		int score;

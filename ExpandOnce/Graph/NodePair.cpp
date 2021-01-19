@@ -49,6 +49,12 @@ NodePair * PairMatchingScore::getPair()
 	return pair;
 }
 
+string csr::PairMatchingScore::getPairKey()
+{
+	return pair->getKey();
+}
+
+
 string NodePair::getKey()
 {
 	return to_string(g1NodeId) + "-"+ to_string(g2NodeId);
