@@ -29,8 +29,12 @@ void removeKey(string key, PairScores* pairScores) {
 	//cout << key << endl;
 	PairScores::accessor acc;
 	auto found = pairScores->find(acc, key);
-	if(found)
+	
+	if (found) {
+		delete acc->second;
 		pairScores->erase(acc);
+	}
+		
 }
 
 struct RemoveUnusedPairs {
@@ -62,8 +66,6 @@ public:
 	CountUnusedPairs(PairScores::iterator it, vector<string>* keysToRemove, MatchedPairsSet* M) :
 		_it(it), _keys(keysToRemove), _M(M) {}
 };
-
-
 
 
 
@@ -145,6 +147,8 @@ MatchedPairsSet* alg::NoisySeedsParallel::run()
 			int pairedCount = M->getNodeSets().size();
 			cout << (float) pairedCount/ (float)graphSize * 100 << "% (" << pairedCount <<")" << endl;
 		}
+		if (M->getNodeSets().size() == graphSize)
+			break;
 			
 		diff = Z->getDifference(M);
 	}

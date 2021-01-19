@@ -75,6 +75,8 @@ MatchedPairsSet* NoisySeedsSerial::run()
 			int pairedCount = M->getNodeSets().size();
 			cout << (float)pairedCount / (float)graphSize * 100 << "% (" << pairedCount << ")" << endl;
 		}
+		if (M->getNodeSets().size() == graphSize)
+			break;
 
 		diff = Z->getDifference(M);
 	}
