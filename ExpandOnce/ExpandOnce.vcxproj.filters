@@ -13,6 +13,7 @@
     <ClCompile Include="Algorithm\ExpandOnce.cpp" />
     <ClCompile Include="SandBox.cpp" />
     <ClCompile Include="Algorithm\NoisySeedsParallel.cpp" />
+    <ClCompile Include="Algorithm\ExpandOnceParallel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config\GraphFilesConfig.hpp" />

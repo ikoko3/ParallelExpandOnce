@@ -1,31 +1,12 @@
 #include "ExpandOnce.h"
 #include "NoisySeeds.h"
 #include "../Helpers/GraphHelper.hpp"
-#include <map>
 
+using namespace gh;
 
-using namespace alg;
-using namespace csr;
-using namespace std;
-
-ExpandOnce::ExpandOnce(csr::Graph * graph1, csr::Graph * graph2, int threshold,int expandedSeedSize, MatchedPairsSet * seedSet)
+csr::MatchedPairsSet * alg::ExpandOnceParallel::run()
 {
-	Graph1 = graph1;
-	Graph2 = graph2;
-	SeedSet = seedSet;
-	Threshold = threshold;
-	this->ExpandedSeedSize = expandedSeedSize;
-}
-
-csr::MatchedPairsSet * alg::ExpandOnce::run()
-{
-	//asbtract
-	throw;
-}
-
-csr::MatchedPairsSet * alg::ExpandOnceSerial::run()
-{
-	cout << "Started expand once"<< endl;
+	cout << "Started expand once" << endl;
 
 	auto A0i = new MatchedPairsSet();
 	A0i->addMatchedPairs(SeedSet);
@@ -37,11 +18,11 @@ csr::MatchedPairsSet * alg::ExpandOnceSerial::run()
 		auto U = new MatchedPairsSet();
 		U->addMatchedPairs(A0i);
 		for (auto pair : A->getNodeSets()) {
-			auto pairScores = new map<string, PairMatchingScore*>();
+			auto pairScores = new PairScores();
 			gh::createNeighbouringPairs(pair, Graph1, Graph2, pairScores);
 			for (auto pairMapItem : *pairScores) {
 				auto pairScore = pairMapItem.second;
-				if (A0i->getNodeSets().size() < ExpandedSeedSize 
+				if (A0i->getNodeSets().size() < ExpandedSeedSize
 					&& !U->graphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
 					&& !U->graphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2)))
 				{
@@ -58,10 +39,8 @@ csr::MatchedPairsSet * alg::ExpandOnceSerial::run()
 	}
 	//A0i->print();
 
-	NoisySeedsSerial noisySeeds(Graph1, Graph2, Threshold, A0i);
+	NoisySeedsParallel noisySeeds(Graph1, Graph2, Threshold, A0i);
 	auto matchedValues = noisySeeds.run();
 
 	return matchedValues;
 }
-
-

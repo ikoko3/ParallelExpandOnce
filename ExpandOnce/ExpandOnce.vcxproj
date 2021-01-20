@@ -191,6 +191,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Algorithm\ExpandOnceParallel.cpp" />
     <ClCompile Include="Algorithm\NoisySeedsParallel.cpp" />
     <ClCompile Include="Config\GraphFilesConfig.cpp" />
     <ClCompile Include="Graph\Graph.cpp" />

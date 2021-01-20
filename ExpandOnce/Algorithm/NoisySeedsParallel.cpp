@@ -3,6 +3,7 @@
 #include <chrono>
 #include <list>  
 #include "NoisySeeds.h"
+#include <algorithm>
 #include "../Helpers/GraphHelper.hpp"
 #include "tbb/concurrent_hash_map.h"
 #include "tbb/concurrent_vector.h"
@@ -108,6 +109,14 @@ void removeUnusedNeighbouringPairs(Graph * g1, Graph * g2, PairScores* pairScore
 	parallel_for(blocked_range<size_t>(0, keysToRemove->size()), RemoveUnusedPairs(keysToRemove, pairScores));	
 }
 
+bool compareScores(PairMatchingScore* s1, PairMatchingScore* s2)
+{
+	if (s1->getScore() != s2->getScore()) {
+		cout << "Found Pair with different score " << s1->getScore() << ":" <<s2->getScore() << endl;
+	}
+
+	return (s1->getScore()  < s2->getScore());
+}
 
 
 
@@ -161,6 +170,8 @@ MatchedPairsSet* alg::NoisySeedsParallel::run()
 		//check new pairs
 		set<int> g1Used;
 		set<int> g2Used;
+		//sort(newPairs->begin(), newPairs->end(),compareScores);
+		//cout << "-----" << endl;
 		for (auto it = newPairs->begin(); it != newPairs->end(); ++it) {
 			auto pair = it[0]->getPair();
 			//it[0]->print();
