@@ -27,6 +27,6 @@ def run_and_log_program(threshold,seed_size):
     log_program_results()
 
 
-run_and_log_program(6,5)
+#run_and_log_program(6,5)
 
 

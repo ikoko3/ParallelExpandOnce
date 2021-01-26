@@ -26,22 +26,23 @@ def create_noisy_seed_set(max_count, graph):
 
     return list
 
+def generate_graphs(nodes,neighbouring_nodes,seed_set_size,graph_similatity):
+    graph1 = nx.generators.random_graphs.barabasi_albert_graph(nodes, neighbouring_nodes)
+    graph2 = create_similar_graph(graph_similatity, graph1)
+    noisy_set = create_noisy_seed_set(seed_set_size, graph1)
 
-graph1 = nx.generators.random_graphs.barabasi_albert_graph(500, 35)
-graph2 = create_similar_graph(80, graph1)
-noisy_set = create_noisy_seed_set(10, graph1)
+    #nx.draw(graph1)
+    #plt.show()
 
-#nx.draw(graph1)
-#plt.show()
+    #nx.draw(graph2)
+    #plt.show()
 
-#nx.draw(graph2)
-#plt.show()
+    nx.write_adjlist(graph1, "graph1.adjlist")
+    nx.write_adjlist(graph2, "graph2.adjlist")
 
-nx.write_adjlist(graph1, "graph1.adjlist")
-nx.write_adjlist(graph2, "graph2.adjlist")
-
-with open('noisy_set.list', 'w') as f:
-    for item in noisy_set:
-        f.write(f"{item} {item}\n")
+    with open('noisy_set.list', 'w') as f:
+        for item in noisy_set:
+            f.write(f"{item} {item}\n")
 
 
+generate_graphs(500,35,10,80)
