@@ -20,25 +20,24 @@ def create_noisy_seed_set(max_count, graph):
     if size <= max_count:
         raise Exception('not enough nodes')
     while len(list) < max_count:
-        r = randint(0, graph.number_of_nodes())
+        r = randint(0, graph.number_of_nodes()-1)
         if r not in list:
             list.append(r)
 
     return list
 
 
-graph1 = nx.generators.random_graphs.barabasi_albert_graph(25, 5)
+graph1 = nx.generators.random_graphs.barabasi_albert_graph(500, 35)
 graph2 = create_similar_graph(80, graph1)
 noisy_set = create_noisy_seed_set(10, graph1)
 
-nx.draw(graph1)
-plt.show()
+#nx.draw(graph1)
+#plt.show()
 
-nx.draw(graph2)
-plt.show()
+#nx.draw(graph2)
+#plt.show()
 
 nx.write_adjlist(graph1, "graph1.adjlist")
-nx.write_multiline_adjlist(graph1,"test")
 nx.write_adjlist(graph2, "graph2.adjlist")
 
 with open('noisy_set.list', 'w') as f:

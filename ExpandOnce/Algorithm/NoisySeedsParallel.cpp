@@ -43,32 +43,7 @@ void checkPairsForThreshold(PairScores::iterator it, MatchedPairsSet* M, concurr
 	}
 }
 
-void checkPairsForThresholdOLD(PairScores::iterator it, MatchedPairsSet* M, concurrent_vector<string>* keysToRemove, int threshold) {
-	auto pairScore = it->second;
 
-	if (!M->graphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
-		&& !M->graphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2)))
-	{
-		if (pairScore->getScore() >= threshold)
-			M->addNodePair(pairScore->getPair());
-	}
-	else {
-		keysToRemove->push_back(it->second->getPairKey());
-	}
-}
-
-
-void removeKey(string key, PairScores* pairScores) {
-	//cout << key << endl;
-	PairScores::accessor acc;
-	auto found = pairScores->find(acc, key);
-	
-	if (found) {
-		delete acc->second;
-		pairScores->erase(acc);
-	}
-		
-}
 
 struct CheckPairsThreshold {
 	PairScores* const _pairScores;
@@ -85,16 +60,6 @@ public:
 		: _keys(keys), _pairScores(pairScores), _M(M), _threshold(threshold), _newPairs(newPairs) {}
 };
 
-struct RemoveUnusedPairs {
-	concurrent_vector<string>* const _keys;
-	PairScores* const _pairScores;
-public:
-	void operator()(const blocked_range<size_t>& r) const {
-		for (size_t i = r.begin(); i != r.end(); ++i)
-			removeKey((*_keys)[i], _pairScores);
-	}
-	RemoveUnusedPairs(concurrent_vector<string>* keys, PairScores* pairScores) : _keys(keys), _pairScores(pairScores) {}
-};
 
 
 void removeUnusedNeighbouringPairs(Graph * g1, Graph * g2, PairScores* pairScores, MatchedPairsSet* M)
@@ -102,7 +67,6 @@ void removeUnusedNeighbouringPairs(Graph * g1, Graph * g2, PairScores* pairScore
 	concurrent_vector<string>* keysToRemove = new concurrent_vector<string>();
 	auto it = pairScores->begin();
 
-	//parallel_for(blocked_range<size_t>(0, pairScores->size()), CountUnusedPairs(it, keysToRemove, M));
 	for (auto it = pairScores->begin(); it != pairScores->end(); it++)
 		checkUnusedPairs(it, keysToRemove, M);
 	
@@ -117,7 +81,6 @@ bool compareScores(PairMatchingScore* s1, PairMatchingScore* s2)
 
 	return (s1->getScore()  < s2->getScore());
 }
-
 
 
 MatchedPairsSet* alg::NoisySeedsParallel::run()
@@ -161,13 +124,13 @@ MatchedPairsSet* alg::NoisySeedsParallel::run()
 		keysToRemove = new concurrent_vector<string>();
 		newPairs = new concurrent_vector<PairMatchingScore*>();
 
-		//cout << "Pair Scores size:" << pairScores->size() << endl;
+		//MAP
 		parallel_for(pairScores->range(), 
 			CheckPairsThreshold(keysToRemove,pairScores,M,Threshold, newPairs));
 
 
 
-		//check new pairs
+		//FILTER
 		set<int> g1Used;
 		set<int> g2Used;
 		//sort(newPairs->begin(), newPairs->end(),compareScores);
@@ -186,18 +149,9 @@ MatchedPairsSet* alg::NoisySeedsParallel::run()
 				keysToRemove->push_back(pair->getKey());
 			}
 		}
-			
-
-
 		delete newPairs;
 
-
-	/*	for (auto it = pairScores->begin(); it != pairScores->end();it++)
-		{
-			checkPairsForThreshold(it, M, keysToRemove, Threshold);
-		}*/
-
-		//Reduce
+		//REDUCE
 		parallel_for(blocked_range<size_t>(0, keysToRemove->size()), RemoveUnusedPairs(keysToRemove, pairScores));
 		delete keysToRemove;
 

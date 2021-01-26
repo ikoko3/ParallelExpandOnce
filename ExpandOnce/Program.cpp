@@ -11,40 +11,52 @@
 #include <fstream>
 #include <string>
 #include <chrono>
+
 #include "Graph/Graph.h"
 #include "SandBox.h"
+
 #include "Helpers/GraphHelper.hpp"
 #include "Config/GraphFilesConfig.hpp"
 #include "Algorithm/NoisySeeds.h"
 #include "Algorithm/ExpandOnce.h"
-#include "tbb/task.h"
-#include "tbb/task_scheduler_init.h"
-#include "tbb/tick_count.h"
-#include "tbb/blocked_range.h"
-#include "tbb/concurrent_vector.h"
-#include "tbb/concurrent_queue.h"
-#include "tbb/concurrent_hash_map.h"
-#include "tbb/parallel_while.h"
-#include "tbb/parallel_for.h"
-#include "tbb/parallel_reduce.h"
-#include "tbb/parallel_scan.h"
-#include "tbb/pipeline.h"
-#include "tbb/atomic.h"
-#include "tbb/mutex.h"
-#include "tbb/spin_mutex.h"
-#include "tbb/queuing_mutex.h"
-#include "tbb/tbb_thread.h"
+
 
 
 using namespace std;
 using namespace tbb;
 
 
-static const int threshold = 6;
-static const int seedSize = 11;
+int threshold = 6;
+int seedSize = 10;
 
 using namespace csr;
 
+
+void parseArguements(int argc, char* argv[]) {	
+	switch (argc) {
+	case 3:
+		seedSize = atoi(argv[2]);
+	case 2:
+		threshold = atoi(argv[1]);
+	case 1:
+	default:
+		break;
+	}
+}
+
+void printResultsToFile() {
+	ofstream myfile;
+	myfile.open("C:\\Users\\john_\\Documents\\tbb_env\\res.json");
+	myfile << "{";
+	myfile << "\"threshold\":"<< threshold <<",";
+	myfile << "\"Nodes\":"<< threshold <<",";
+	myfile << "\"G1Edges\":"<< threshold <<",";
+	myfile << "\"G2Edges\":"<< threshold <<",";
+	myfile << "\"Stime\":1.55,\"Saccuracy\":0.67,";
+	myfile << "\"Ptime\":1.55,\"Paccuracy\":0.67";
+	myfile << "}";
+	myfile.close();
+}
 
 void compareNoisySeedsImplementations() {
 	Graph* graph1 = gh::createGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph1), GraphFilesConfig::LINES_TO_SKIP);
@@ -61,15 +73,32 @@ void compareNoisySeedsImplementations() {
 	auto matchedValuesP = noisySeedsP.run();
 	std::chrono::steady_clock::time_point endP = std::chrono::steady_clock::now();
 	
+	long sTime = chrono::duration_cast<std::chrono::milliseconds>(endS - beginS).count();
+	long pTime = chrono::duration_cast<std::chrono::milliseconds>(endP - beginP).count();
+	auto sAccuracy = matchedValuesS->getAccuracy();
+	auto pAccuracy = matchedValuesP->getAccuracy();
 
+	//cout << "SERIAL: ";
+	//matchedValuesS->printAccuracy();
+	//cout << "PARALLEL: ";
+	//matchedValuesP->printAccuracy();
 
-	cout << "SERIAL: ";
-	matchedValuesS->printAccuracy();
-	cout << "PARALLEL: ";
-	matchedValuesP->printAccuracy();
+	//std::cout << "SERIAL  : " << sTime << "[ms]" << std::endl;
+	//std::cout << "PARALLEL: " << pTime << "[ms]" << std::endl;
 
-	std::cout << "SERIAL  : " << std::chrono::duration_cast<std::chrono::milliseconds> (endS - beginS).count() << "[ms]" << std::endl;
-	std::cout << "PARALLEL: " << std::chrono::duration_cast<std::chrono::milliseconds> (endP - beginP).count() << "[ms]" << std::endl;
+	ofstream resultsFile;
+	resultsFile.open("C:\\Users\\john_\\Documents\\tbb_env\\res.json");
+	resultsFile << "{";
+	resultsFile << "\"threshold\":" << threshold << ",";
+	resultsFile << "\"Nodes\":" << graph1->getNodesCount() << ",";
+	resultsFile << "\"G1Edges\":" << graph1->getEdgesCount() << ",";
+	resultsFile << "\"G2Edges\":" << graph2->getEdgesCount()<< ",";
+	resultsFile << "\"Stime\":"<< sTime <<",\"Saccuracy\":"<< sAccuracy.accuraccy<<",";
+	resultsFile << "\"Scorrect\":"<< sAccuracy.correct <<",\"Stotal\":"<<sAccuracy.total<<",";
+	resultsFile << "\"Ptime\":"<< pTime <<",\"Paccuracy\":"<< pAccuracy.accuraccy << ",";
+	resultsFile << "\"Pcorrect\":" << pAccuracy.correct << ",\"Ptotal\":" << pAccuracy.total;
+	resultsFile << "}";
+	resultsFile.close();
 
 
     delete matchedValuesS;
@@ -92,30 +121,34 @@ void compareExpandOnceImplementations() {
 
 	std::chrono::steady_clock::time_point beginP = std::chrono::steady_clock::now();
 	alg::ExpandOnceParallel expandOnceP(graph1, graph2, threshold, seedSize, set);
-	auto matchedValuesP = expandOnceP.run();
+	//auto matchedValuesP = expandOnceP.run();
 	std::chrono::steady_clock::time_point endP = std::chrono::steady_clock::now();
 
 
 	cout << "SERIAL: ";
 	matchedValuesS->printAccuracy();
 	cout << "PARALLEL: ";
-	matchedValuesP->printAccuracy();
+	//matchedValuesP->printAccuracy();
 
 	std::cout << "SERIAL  : " << std::chrono::duration_cast<std::chrono::milliseconds> (endS - beginS).count() << "[ms]" << std::endl;
 	std::cout << "PARALLEL: " << std::chrono::duration_cast<std::chrono::milliseconds> (endP - beginP).count() << "[ms]" << std::endl;
 
 
 	delete matchedValuesS;
-	delete matchedValuesP;
+	//delete matchedValuesP;
 	delete set;
 	delete graph1;
 	delete graph2;
 }
 
-int main() {
 
-	//compareNoisySeedsImplementations();
-	compareExpandOnceImplementations();
+
+
+int main(int argc, char* argv[]) {
+	parseArguements(argc, argv);
+
+	compareNoisySeedsImplementations();
+	//compareExpandOnceImplementations();
 	
 }
 

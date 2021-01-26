@@ -174,6 +174,18 @@ bool MatchedPairsSet::graphContainsNode(int graph, int nodeId)
 	}
 }
 
+SetAccuraccy csr::MatchedPairsSet::getAccuracy()
+{
+	int  correct = 0;
+	for (auto node : NodePairs) {
+		if (node->valuesAreMatched())
+			correct++;
+	}
+	float accuracy = (float)correct / (float)NodePairs.size();
+
+	return SetAccuraccy(correct, NodePairs.size(), accuracy);
+}
+
 void MatchedPairsSet::print()
 {
 	cout << endl << "-------------Printing Matched Pairs Set-------------" << endl;
@@ -186,14 +198,8 @@ void MatchedPairsSet::print()
 
 void csr::MatchedPairsSet::printAccuracy()
 {
-	int  correct = 0;
-	for (auto node : NodePairs) {
-		if (node->valuesAreMatched())
-			correct++;
-	}
-	float accuracy = (float)correct / (float)NodePairs.size();
-
-	cout <<"Accuracy: "<< accuracy*100 << "% ("<< correct <<"/"<< NodePairs.size()<<")"<< endl;
+	auto accuracy = getAccuracy();
+	cout <<"Accuracy: "<< accuracy.accuraccy*100 << "% ("<< accuracy.correct <<"/"<< NodePairs.size()<<")"<< endl;
 }
 
 bool csr::operator<( NodePair  &left,  NodePair &right)

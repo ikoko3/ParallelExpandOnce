@@ -40,6 +40,18 @@ namespace csr {
 		int score;
 	};
 
+	struct SetAccuraccy {
+	public:
+		int correct;
+		int total;
+		float accuraccy;
+		SetAccuraccy(int _correct, int _total, float _accuracy)
+		{
+			correct = _correct;
+			total = _total;
+			accuraccy = _accuracy;
+		}
+	};
 
 	class MatchedPairsSet {
 	public:
@@ -58,6 +70,8 @@ namespace csr {
 		set<int>* getNodesForGraph(int graph);
 		bool graphContainsNode(int graph, int nodeId);
 
+		SetAccuraccy getAccuracy();
+
 		void print();
 		void printAccuracy();
 	private:
@@ -66,4 +80,6 @@ namespace csr {
 		set<int> Graph1Nodes;
 		set<int> Graph2Nodes;
 	};
+
+
 }

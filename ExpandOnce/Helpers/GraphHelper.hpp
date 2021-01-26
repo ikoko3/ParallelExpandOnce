@@ -4,9 +4,12 @@
 #include "../Graph/Graph.h"
 #include "../Graph/NodePair.h"
 #include "tbb/concurrent_hash_map.h"
+#include "tbb/concurrent_vector.h"
+
 
 using namespace std;
 using namespace csr;
+using namespace tbb;
 
 namespace gh
 {
@@ -36,4 +39,17 @@ namespace gh
 
 
 	void removeUnusedNeighbouringPairs(Graph* g1, Graph* g2, map<string, PairMatchingScore*>* pairScores, MatchedPairsSet* M);
+
+	void removeKey(string key, PairScores* pairScores);
+
+	struct RemoveUnusedPairs {
+		concurrent_vector<string>* const _keys;
+		PairScores* const _pairScores;
+	public:
+		void operator()(const blocked_range<size_t>& r) const {
+			for (size_t i = r.begin(); i != r.end(); ++i)
+				removeKey((*_keys)[i], _pairScores);
+		}
+		RemoveUnusedPairs(concurrent_vector<string>* keys, PairScores* pairScores) : _keys(keys), _pairScores(pairScores) {}
+	};
 }

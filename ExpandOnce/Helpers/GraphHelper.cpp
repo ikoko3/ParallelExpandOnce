@@ -12,6 +12,7 @@
 #include "../Graph/Node.h"
 #include "../Graph/NodePair.h"
 #include "tbb/concurrent_hash_map.h"
+#include "tbb/concurrent_vector.h"
 #include "tbb/blocked_range.h"
 #include "tbb/parallel_for.h"
 
@@ -226,5 +227,19 @@ namespace gh
 
 	}
 
+	void removeKey(string key, PairScores* pairScores) {
+		PairScores::accessor acc;
+		auto found = pairScores->find(acc, key);
+
+		if (found) {
+			delete acc->second;
+			pairScores->erase(acc);
+		}
+
+	}
+
+	
 
 }
+
+
