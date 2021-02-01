@@ -90,6 +90,7 @@ void compareNoisySeedsImplementations() {
 	resultsFile.open("C:\\Users\\john_\\Documents\\tbb_env\\res.json");
 	resultsFile << "{";
 	resultsFile << "\"threshold\":" << threshold << ",";
+	resultsFile << "\"SeedSetSize\":" << set->getNodeSets().size() << ",";
 	resultsFile << "\"Nodes\":" << graph1->getNodesCount() << ",";
 	resultsFile << "\"G1Edges\":" << graph1->getEdgesCount() << ",";
 	resultsFile << "\"G2Edges\":" << graph2->getEdgesCount()<< ",";

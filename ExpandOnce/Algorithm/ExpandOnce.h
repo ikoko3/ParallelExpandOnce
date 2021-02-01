@@ -16,6 +16,12 @@ namespace alg {
 		int ExpandedSeedSize;
 	};
 
+	class ExpandOnceOriginal : public ExpandOnce {
+	public:
+		using ExpandOnce::ExpandOnce;
+		csr::MatchedPairsSet* run();
+	};
+
 	class ExpandOnceSerial : public ExpandOnce {
 	public:
 		using ExpandOnce::ExpandOnce;

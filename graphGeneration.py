@@ -2,6 +2,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from random import randint
 
+export_path = "C:\\Users\\john_\\Documents\\tbb_env\\tbb\\"
 
 def create_similar_graph(percentage, graph):
     n_graph = graph.copy()
@@ -37,10 +38,10 @@ def generate_graphs(nodes,neighbouring_nodes,seed_set_size,graph_similatity):
     #nx.draw(graph2)
     #plt.show()
 
-    nx.write_adjlist(graph1, "graph1.adjlist")
-    nx.write_adjlist(graph2, "graph2.adjlist")
+    nx.write_adjlist(graph1,export_path + "graph1.adjlist")
+    nx.write_adjlist(graph2,export_path + "graph2.adjlist")
 
-    with open('noisy_set.list', 'w') as f:
+    with open(export_path + 'noisy_set.list', 'w') as f:
         for item in noisy_set:
             f.write(f"{item} {item}\n")
 

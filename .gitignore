@@ -1,2 +1,4 @@
 ExpandOnce/.vs/
 __pycache__
+*.adjlist
+*.list

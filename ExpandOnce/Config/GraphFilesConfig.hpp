@@ -2,7 +2,7 @@
 #include <stdexcept>
 
 
-#define GRAPH_FILES_ROOT "C:\\Users\\john_\\CLionProjects\\graph_matching\\"
+#define GRAPH_FILES_ROOT "C:\\Users\\john_\\Documents\\tbb_env\\tbb\\"
 
 #define GRAPH_FILE1 "graph1.adjlist"
 #define GRAPH_FILE2 "graph2.adjlist"
