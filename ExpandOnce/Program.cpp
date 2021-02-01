@@ -28,7 +28,7 @@ using namespace csr;
 using namespace chrono;
 
 int threshold = 6;
-int seedSize = 10;
+int seedSize = 25;
 
 void parseArguements(int argc, char* argv[]) {	
 	switch (argc) {
@@ -80,28 +80,28 @@ void compareExpandOnceImplementations() {
 	MatchedPairsSet* set = gh::createSeedSetFromFile(FilesConfig::getNoisySeedSetName());
 
 	std::chrono::steady_clock::time_point beginS = std::chrono::steady_clock::now();
-	alg::ExpandOnceSerial expandOnceS(graph1, graph2, threshold, seedSize, set);
+	alg::ExpandOnceOriginal expandOnceS(graph1, graph2, threshold, seedSize, set);
 	auto matchedValuesS = expandOnceS.run();
 	std::chrono::steady_clock::time_point endS = std::chrono::steady_clock::now();
 
 
 	std::chrono::steady_clock::time_point beginP = std::chrono::steady_clock::now();
-	alg::ExpandOnceParallel expandOnceP(graph1, graph2, threshold, seedSize, set);
-	//auto matchedValuesP = expandOnceP.run();
+	alg::ExpandOnceSerial expandOnceP(graph1, graph2, threshold, seedSize, set);
+	auto matchedValuesP = expandOnceP.run();
 	std::chrono::steady_clock::time_point endP = std::chrono::steady_clock::now();
 
 
-	cout << "SERIAL: ";
+	cout << "ORIGINAL: ";
 	matchedValuesS->printAccuracy();
-	cout << "PARALLEL: ";
-	//matchedValuesP->printAccuracy();
+	cout << "SERIAL: ";
+	matchedValuesP->printAccuracy();
 
-	std::cout << "SERIAL  : " << std::chrono::duration_cast<std::chrono::milliseconds> (endS - beginS).count() << "[ms]" << std::endl;
-	std::cout << "PARALLEL: " << std::chrono::duration_cast<std::chrono::milliseconds> (endP - beginP).count() << "[ms]" << std::endl;
+	std::cout << "ORIGINAL  : " << std::chrono::duration_cast<std::chrono::milliseconds> (endS - beginS).count() << "[ms]" << std::endl;
+	std::cout << "SERIAL: " << std::chrono::duration_cast<std::chrono::milliseconds> (endP - beginP).count() << "[ms]" << std::endl;
 
 
 	delete matchedValuesS;
-	//delete matchedValuesP;
+	delete matchedValuesP;
 	delete set;
 	delete graph1;
 	delete graph2;
@@ -113,8 +113,8 @@ void compareExpandOnceImplementations() {
 int main(int argc, char* argv[]) {
 	parseArguements(argc, argv);
 
-	compareNoisySeedsImplementations();
-	//compareExpandOnceImplementations();
+	//compareNoisySeedsImplementations();
+	compareExpandOnceImplementations();
 	
 }
 

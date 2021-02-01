@@ -22,6 +22,7 @@ namespace alg {
 		csr::MatchedPairsSet* run();
 	};
 
+	//This version contains a few more checks, it is slower but more accurate than the original one.
 	class ExpandOnceSerial : public ExpandOnce {
 	public:
 		using ExpandOnce::ExpandOnce;

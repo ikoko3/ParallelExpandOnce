@@ -26,7 +26,7 @@ csr::MatchedPairsSet * alg::ExpandOnce::run()
 csr::MatchedPairsSet * alg::ExpandOnceOriginal::run()
 {
 	int threshold = Threshold;
-	cout << "Started expand once"<< endl;
+	cout << "Started Original expand once"<< endl;
 
 	auto A0i = new MatchedPairsSet();
 	A0i->addMatchedPairs(SeedSet);
@@ -49,8 +49,8 @@ csr::MatchedPairsSet * alg::ExpandOnceOriginal::run()
 			for (auto it = pairScores->cbegin(); it != pairScores->cend();) {
 				auto pairScore = it->second;
 				if (A0i->getNodeSets().size() < ExpandedSeedSize 
-					&& !A0i->graphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
-					&& !A0i->graphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2)))
+					&& !U->graphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
+					&& !U->graphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2)))
 				{
 						Z->addNodePair(pairScore->getPair());
 						A0i->addNodePair(pairScore->getPair());
@@ -81,7 +81,7 @@ csr::MatchedPairsSet * alg::ExpandOnceOriginal::run()
 	A0i->print();
 
 	NoisySeedsSerial noisySeeds(Graph1, Graph2, Threshold, A0i);
-	auto matchedValues = noisySeeds.run();
+	//auto matchedValues = noisySeeds.run();
 
 	return A0i;
 }
@@ -89,7 +89,7 @@ csr::MatchedPairsSet * alg::ExpandOnceOriginal::run()
 csr::MatchedPairsSet * alg::ExpandOnceSerial::run()
 {
 	int threshold = Threshold;
-	cout << "Started expand once" << endl;
+	cout << "Started Serial expand once" << endl;
 
 	auto A0i = new MatchedPairsSet();
 	A0i->addMatchedPairs(SeedSet);
@@ -97,36 +97,37 @@ csr::MatchedPairsSet * alg::ExpandOnceSerial::run()
 	A->addMatchedPairs(SeedSet);
 	MatchedPairsSet * Z;
 	MatchedPairsSet * U;
+	U->addMatchedPairs(A0i);
 
 	auto pairScores = new map<string, PairMatchingScore*>();
 	while (A0i->getNodeSets().size() < ExpandedSeedSize) {
 		Z = new MatchedPairsSet();
 		U = new MatchedPairsSet();
-		U->addMatchedPairs(A0i);
+
 
 		int newPairs = 0;
 		for (auto pair : A->getNodeSets())
 		{
-
 			gh::createNeighbouringPairs(pair, Graph1, Graph2, pairScores);
 			for (auto it = pairScores->cbegin(); it != pairScores->cend();) {
 				auto pairScore = it->second;
 				if (A0i->getNodeSets().size() < ExpandedSeedSize
-					&& !A0i->graphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
-					&& !A0i->graphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2)))
+					&& !U->graphContainsNode(graph1, pairScore->getPair()->getNodeId(graph1))
+					&& !U->graphContainsNode(graph2, pairScore->getPair()->getNodeId(graph2)))
 				{
-					Z->addNodePair(pairScore->getPair());
-					A0i->addNodePair(pairScore->getPair());
+					auto pair = pairScore->getPair();
+					Z->addNodePair(pair);
+					A0i->addNodePair(pair);
+					U->addNodePair(pair);
 
+					break;
 					++it;
 				}
 				else {
 					delete pairScore;
 					it = pairScores->erase(it);
 				}
-
 			}
-
 		}
 
 		delete A;
@@ -144,7 +145,7 @@ csr::MatchedPairsSet * alg::ExpandOnceSerial::run()
 	A0i->print();
 
 	NoisySeedsSerial noisySeeds(Graph1, Graph2, Threshold, A0i);
-	auto matchedValues = noisySeeds.run();
+	//auto matchedValues = noisySeeds.run();
 
 	return A0i;
 }
