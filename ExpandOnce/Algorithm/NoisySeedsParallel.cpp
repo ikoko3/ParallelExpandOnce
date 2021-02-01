@@ -2,9 +2,11 @@
 #include <time.h> 
 #include <chrono>
 #include <list>  
-#include "NoisySeeds.h"
 #include <algorithm>
+
 #include "../Helpers/GraphHelper.hpp"
+#include "NoisySeeds.h"
+
 #include "tbb/concurrent_hash_map.h"
 #include "tbb/concurrent_vector.h"
 #include "tbb/blocked_range.h"
@@ -13,9 +15,6 @@
 using namespace tbb;
 using namespace std;
 using namespace gh;
-
-
-
 
 
 void checkUnusedPairs(PairScores::iterator it, concurrent_vector<string>* keysToRemove, MatchedPairsSet* M) {
@@ -73,15 +72,6 @@ void removeUnusedNeighbouringPairs(Graph * g1, Graph * g2, PairScores* pairScore
 	parallel_for(blocked_range<size_t>(0, keysToRemove->size()), RemoveUnusedPairs(keysToRemove, pairScores));	
 }
 
-bool compareScores(PairMatchingScore* s1, PairMatchingScore* s2)
-{
-	if (s1->getScore() != s2->getScore()) {
-		cout << "Found Pair with different score " << s1->getScore() << ":" <<s2->getScore() << endl;
-	}
-
-	return (s1->getScore()  < s2->getScore());
-}
-
 
 MatchedPairsSet* alg::NoisySeedsParallel::run()
 {
@@ -128,16 +118,12 @@ MatchedPairsSet* alg::NoisySeedsParallel::run()
 		parallel_for(pairScores->range(), 
 			CheckPairsThreshold(keysToRemove,pairScores,M,Threshold, newPairs));
 
-
-
 		//FILTER
 		set<int> g1Used;
 		set<int> g2Used;
-		//sort(newPairs->begin(), newPairs->end(),compareScores);
-		//cout << "-----" << endl;
+		sort(newPairs->begin(), newPairs->end(),compareScores);
 		for (auto it = newPairs->begin(); it != newPairs->end(); ++it) {
 			auto pair = it[0]->getPair();
-			//it[0]->print();
 			if (!g1Used.count(pair->getNodeId(graph1)) > 0
 				&& !g2Used.count(pair->getNodeId(graph2)) > 0)
 			{

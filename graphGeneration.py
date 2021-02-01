@@ -46,4 +46,4 @@ def generate_graphs(nodes,neighbouring_nodes,seed_set_size,graph_similatity):
             f.write(f"{item} {item}\n")
 
 
-generate_graphs(500,35,5,80)
+generate_graphs(2500,235,5,80)

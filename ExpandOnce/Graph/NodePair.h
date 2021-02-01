@@ -33,6 +33,8 @@ namespace csr {
 		void print();
 		void incrementScore();
 		int getScore();
+		int getPairsDistance();
+
 		NodePair* getPair();
 		string getPairKey();
 	private:
@@ -81,5 +83,5 @@ namespace csr {
 		set<int> Graph2Nodes;
 	};
 
-
+	bool compareScores(PairMatchingScore* s1, PairMatchingScore* s2);
 }

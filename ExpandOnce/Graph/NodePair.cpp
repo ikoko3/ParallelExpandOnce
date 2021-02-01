@@ -1,5 +1,7 @@
 #include "NodePair.h"
 #include "Graph.h"
+
+#include <stdlib.h>
 #include <map>
 #include <algorithm>
 
@@ -42,6 +44,11 @@ void PairMatchingScore::incrementScore()
 int PairMatchingScore::getScore()
 {
 	return score;
+}
+
+int csr::PairMatchingScore::getPairsDistance()
+{
+	return abs(pair->getNodeId(graph1) - pair->getNodeId(graph2));
 }
 
 NodePair * PairMatchingScore::getPair()
@@ -206,4 +213,13 @@ void csr::MatchedPairsSet::printAccuracy()
 bool csr::operator<( NodePair  &left,  NodePair &right)
 {
 	return left.getKey() < right.getKey();
+}
+
+bool csr::compareScores(PairMatchingScore * s1, PairMatchingScore * s2)
+{
+	if (s1->getScore() == s2->getScore()) {
+		return s1->getPairsDistance() < s2->getPairsDistance();
+	}
+
+	return (s1->getScore() < s2->getScore());
 }

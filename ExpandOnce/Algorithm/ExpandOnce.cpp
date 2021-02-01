@@ -140,9 +140,9 @@ csr::MatchedPairsSet * alg::ExpandOnceSerial::run()
 	A0i->print();
 
 	NoisySeedsSerial noisySeeds(Graph1, Graph2, Threshold, A0i);
-	//auto matchedValues = noisySeeds.run();
+	auto matchedValues = noisySeeds.run();
 
-	return A0i;
+	return matchedValues;
 }
 
 
