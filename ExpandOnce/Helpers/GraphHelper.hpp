@@ -79,10 +79,10 @@ namespace gh
 		}
 
 		~MatchedPairsResults() {
-			delete serialAccuracy;
-			delete parallelAccuracy;
+				delete serialAccuracy;
+				delete parallelAccuracy;
 		}
 	};
 
-	void saveMatchedResultsToFile(MatchedPairsResults results);
+	void saveMatchedResultsToFile(MatchedPairsResults* results);
 }

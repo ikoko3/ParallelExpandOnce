@@ -241,20 +241,20 @@ namespace gh
 
 	}
 
-	void saveMatchedResultsToFile(MatchedPairsResults r)
+	void saveMatchedResultsToFile(MatchedPairsResults* r)
 	{
 		ofstream resultsFile;
 		resultsFile.open(RESULTS_FILE);
 		resultsFile << "{";
-		resultsFile << "\"threshold\":" << r.threshold << ",";
-		resultsFile << "\"SeedSetSize\":" << r.seedSetSize << ",";
-		resultsFile << "\"Nodes\":" << r.nodes << ",";
-		resultsFile << "\"G1Edges\":" << r.g1Edges << ",";
-		resultsFile << "\"G2Edges\":" << r.g2Edges << ",";
-		resultsFile << "\"Stime\":" << r.serialTime << ",\"Saccuracy\":" << r.serialAccuracy->accuraccy<< ",";
-		resultsFile << "\"Scorrect\":" << r.serialAccuracy->correct << ",\"Stotal\":" << r.serialAccuracy->total << ",";
-		resultsFile << "\"Ptime\":" << r.parallelTime<< ",\"Paccuracy\":" << r.parallelAccuracy->accuraccy << ",";
-		resultsFile << "\"Pcorrect\":" << r.parallelAccuracy->correct << ",\"Ptotal\":" << r.parallelAccuracy->total;
+		resultsFile << "\"threshold\":" << r->threshold << ",";
+		resultsFile << "\"SeedSetSize\":" << r->seedSetSize << ",";
+		resultsFile << "\"Nodes\":" << r->nodes << ",";
+		resultsFile << "\"G1Edges\":" << r->g1Edges << ",";
+		resultsFile << "\"G2Edges\":" << r->g2Edges << ",";
+		resultsFile << "\"Stime\":" << r->serialTime << ",\"Saccuracy\":" << r->serialAccuracy->accuraccy<< ",";
+		resultsFile << "\"Scorrect\":" << r->serialAccuracy->correct << ",\"Stotal\":" << r->serialAccuracy->total << ",";
+		resultsFile << "\"Ptime\":" << r->parallelTime<< ",\"Paccuracy\":" << r->parallelAccuracy->accuraccy << ",";
+		resultsFile << "\"Pcorrect\":" << r->parallelAccuracy->correct << ",\"Ptotal\":" << r->parallelAccuracy->total;
 		resultsFile << "}";
 		resultsFile.close();
 	}

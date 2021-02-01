@@ -63,7 +63,7 @@ void compareNoisySeedsImplementations() {
 	auto sAccuracy = matchedValuesS->getAccuracy();
 	auto pAccuracy = matchedValuesP->getAccuracy();
 
-	gh::MatchedPairsResults results(threshold, (int)set->getNodeSets().size(), graph1->getNodesCount(), graph1->getEdgesCount(), graph2->getEdgesCount(), 
+	gh::MatchedPairsResults* results = new gh::MatchedPairsResults(threshold, (int)set->getNodeSets().size(), graph1->getNodesCount(), graph1->getEdgesCount(), graph2->getEdgesCount(),
 									duration_cast<milliseconds>(endS - beginS).count(),	duration_cast<milliseconds>(endP - beginP).count(),sAccuracy,pAccuracy);
 	gh::saveMatchedResultsToFile(results);
 
@@ -126,7 +126,7 @@ void compareExpandeOnceImplementations() {
 	auto sAccuracy = matchedValuesS->getAccuracy();
 	auto pAccuracy = matchedValuesP->getAccuracy();
 
-	gh::MatchedPairsResults results(threshold, (int)set->getNodeSets().size(), graph1->getNodesCount(), graph1->getEdgesCount(), graph2->getEdgesCount(),
+	gh::MatchedPairsResults* results = new gh::MatchedPairsResults(threshold, (int)set->getNodeSets().size(), graph1->getNodesCount(), graph1->getEdgesCount(), graph2->getEdgesCount(),
 		duration_cast<milliseconds>(endS - beginS).count(), duration_cast<milliseconds>(endP - beginP).count(), sAccuracy, pAccuracy);
 	gh::saveMatchedResultsToFile(results);
 
@@ -135,6 +135,7 @@ void compareExpandeOnceImplementations() {
 	delete set;
 	delete graph1;
 	delete graph2;
+	delete results;
 }
 
 
@@ -143,8 +144,8 @@ int main(int argc, char* argv[]) {
 	parseArguements(argc, argv);
 
 	//compareNoisySeedsImplementations();
-	compareExpandOnceSerialImplementations();
-	//compareExpandeOnceImplementations();
+	//compareExpandOnceSerialImplementations();
+	compareExpandeOnceImplementations();
 	
 }
 
