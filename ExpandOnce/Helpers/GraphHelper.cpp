@@ -1,4 +1,3 @@
-#include "GraphHelper.hpp"
 #include <iostream>
 #include <fstream>
 #include <list>  
@@ -9,8 +8,12 @@
 #include <deque>
 #include <string>
 #include <map>
+
 #include "../Graph/Node.h"
 #include "../Graph/NodePair.h"
+#include "GraphHelper.hpp"
+#include "../Config/GraphFilesConfig.hpp"
+
 #include "tbb/concurrent_hash_map.h"
 #include "tbb/concurrent_vector.h"
 #include "tbb/blocked_range.h"
@@ -236,6 +239,24 @@ namespace gh
 			pairScores->erase(acc);
 		}
 
+	}
+
+	void saveMatchedResultsToFile(MatchedPairsResults r)
+	{
+		ofstream resultsFile;
+		resultsFile.open(RESULTS_FILE);
+		resultsFile << "{";
+		resultsFile << "\"threshold\":" << r.threshold << ",";
+		resultsFile << "\"SeedSetSize\":" << r.seedSetSize << ",";
+		resultsFile << "\"Nodes\":" << r.nodes << ",";
+		resultsFile << "\"G1Edges\":" << r.g1Edges << ",";
+		resultsFile << "\"G2Edges\":" << r.g2Edges << ",";
+		resultsFile << "\"Stime\":" << r.serialTime << ",\"Saccuracy\":" << r.serialAccuracy->accuraccy<< ",";
+		resultsFile << "\"Scorrect\":" << r.serialAccuracy->correct << ",\"Stotal\":" << r.serialAccuracy->total << ",";
+		resultsFile << "\"Ptime\":" << r.parallelTime<< ",\"Paccuracy\":" << r.parallelAccuracy->accuraccy << ",";
+		resultsFile << "\"Pcorrect\":" << r.parallelAccuracy->correct << ",\"Ptotal\":" << r.parallelAccuracy->total;
+		resultsFile << "}";
+		resultsFile.close();
 	}
 
 	

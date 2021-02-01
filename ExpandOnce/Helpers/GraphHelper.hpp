@@ -52,4 +52,37 @@ namespace gh
 		}
 		RemoveUnusedPairs(concurrent_vector<string>* keys, PairScores* pairScores) : _keys(keys), _pairScores(pairScores) {}
 	};
+
+	struct MatchedPairsResults {
+		int threshold;
+		int seedSetSize;
+		int nodes;
+		int g1Edges;
+		int g2Edges;
+		SetAccuraccy* serialAccuracy;
+		SetAccuraccy* parallelAccuracy;
+		long serialTime;
+		long parallelTime;
+
+		MatchedPairsResults(int _threshold,int _seedSetSize, int _nodes, int _g1Edges, int _g2Edges
+		,long _serialTime, long _parallelTime, SetAccuraccy* _serialAccuracy, SetAccuraccy* _parallelAccuracy) 
+		{
+			threshold = _threshold;
+			seedSetSize = _seedSetSize;
+			nodes = _nodes;
+			g1Edges = _g1Edges;
+			g2Edges = _g2Edges;
+			serialAccuracy = _serialAccuracy;
+			parallelAccuracy = _parallelAccuracy;
+			serialTime = _serialTime;
+			parallelTime = _parallelTime;
+		}
+
+		~MatchedPairsResults() {
+			delete serialAccuracy;
+			delete parallelAccuracy;
+		}
+	};
+
+	void saveMatchedResultsToFile(MatchedPairsResults results);
 }

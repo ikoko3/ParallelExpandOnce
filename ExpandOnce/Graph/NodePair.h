@@ -70,7 +70,7 @@ namespace csr {
 		set<int>* getNodesForGraph(int graph);
 		bool graphContainsNode(int graph, int nodeId);
 
-		SetAccuraccy getAccuracy();
+		SetAccuraccy* getAccuracy();
 
 		void print();
 		void printAccuracy();

@@ -24,13 +24,11 @@
 
 using namespace std;
 using namespace tbb;
-
+using namespace csr;
+using namespace chrono;
 
 int threshold = 6;
 int seedSize = 10;
-
-using namespace csr;
-
 
 void parseArguements(int argc, char* argv[]) {	
 	switch (argc) {
@@ -44,63 +42,30 @@ void parseArguements(int argc, char* argv[]) {
 	}
 }
 
-void printResultsToFile() {
-	ofstream myfile;
-	myfile.open("C:\\Users\\john_\\Documents\\tbb_env\\res.json");
-	myfile << "{";
-	myfile << "\"threshold\":"<< threshold <<",";
-	myfile << "\"Nodes\":"<< threshold <<",";
-	myfile << "\"G1Edges\":"<< threshold <<",";
-	myfile << "\"G2Edges\":"<< threshold <<",";
-	myfile << "\"Stime\":1.55,\"Saccuracy\":0.67,";
-	myfile << "\"Ptime\":1.55,\"Paccuracy\":0.67";
-	myfile << "}";
-	myfile.close();
-}
+
 
 void compareNoisySeedsImplementations() {
-	Graph* graph1 = gh::createGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph1), GraphFilesConfig::LINES_TO_SKIP);
-	Graph* graph2 = gh::createGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph2), GraphFilesConfig::LINES_TO_SKIP);
-	MatchedPairsSet* set = gh::createSeedSetFromFile(GraphFilesConfig::getNoisySeedSetName());
+	Graph* graph1 = gh::createGraphFromFile(FilesConfig::getGraphFileName(csr::graph1), FilesConfig::LINES_TO_SKIP);
+	Graph* graph2 = gh::createGraphFromFile(FilesConfig::getGraphFileName(csr::graph2), FilesConfig::LINES_TO_SKIP);
+	MatchedPairsSet* set = gh::createSeedSetFromFile(FilesConfig::getNoisySeedSetName());
 
-	std::chrono::steady_clock::time_point beginS = std::chrono::steady_clock::now();
+	steady_clock::time_point beginS = steady_clock::now();
 	alg::NoisySeedsSerial noisySeeedsS(graph1, graph2, threshold, set);
 	auto matchedValuesS = noisySeeedsS.run();
-	std::chrono::steady_clock::time_point endS = std::chrono::steady_clock::now();
+	steady_clock::time_point endS = steady_clock::now();
 
-	std::chrono::steady_clock::time_point beginP = std::chrono::steady_clock::now();
+	steady_clock::time_point beginP = steady_clock::now();
 	alg::NoisySeedsParallel noisySeedsP(graph1, graph2, threshold, set);
 	auto matchedValuesP = noisySeedsP.run();
-	std::chrono::steady_clock::time_point endP = std::chrono::steady_clock::now();
+	steady_clock::time_point endP = steady_clock::now();
+
 	
-	long sTime = chrono::duration_cast<std::chrono::milliseconds>(endS - beginS).count();
-	long pTime = chrono::duration_cast<std::chrono::milliseconds>(endP - beginP).count();
 	auto sAccuracy = matchedValuesS->getAccuracy();
 	auto pAccuracy = matchedValuesP->getAccuracy();
 
-	//cout << "SERIAL: ";
-	//matchedValuesS->printAccuracy();
-	//cout << "PARALLEL: ";
-	//matchedValuesP->printAccuracy();
-
-	//std::cout << "SERIAL  : " << sTime << "[ms]" << std::endl;
-	//std::cout << "PARALLEL: " << pTime << "[ms]" << std::endl;
-
-	ofstream resultsFile;
-	resultsFile.open("C:\\Users\\john_\\Documents\\tbb_env\\res.json");
-	resultsFile << "{";
-	resultsFile << "\"threshold\":" << threshold << ",";
-	resultsFile << "\"SeedSetSize\":" << set->getNodeSets().size() << ",";
-	resultsFile << "\"Nodes\":" << graph1->getNodesCount() << ",";
-	resultsFile << "\"G1Edges\":" << graph1->getEdgesCount() << ",";
-	resultsFile << "\"G2Edges\":" << graph2->getEdgesCount()<< ",";
-	resultsFile << "\"Stime\":"<< sTime <<",\"Saccuracy\":"<< sAccuracy.accuraccy<<",";
-	resultsFile << "\"Scorrect\":"<< sAccuracy.correct <<",\"Stotal\":"<<sAccuracy.total<<",";
-	resultsFile << "\"Ptime\":"<< pTime <<",\"Paccuracy\":"<< pAccuracy.accuraccy << ",";
-	resultsFile << "\"Pcorrect\":" << pAccuracy.correct << ",\"Ptotal\":" << pAccuracy.total;
-	resultsFile << "}";
-	resultsFile.close();
-
+	gh::MatchedPairsResults results(threshold, (int)set->getNodeSets().size(), graph1->getNodesCount(), graph1->getEdgesCount(), graph2->getEdgesCount(), 
+									duration_cast<milliseconds>(endS - beginS).count(),	duration_cast<milliseconds>(endP - beginP).count(),sAccuracy,pAccuracy);
+	gh::saveMatchedResultsToFile(results);
 
     delete matchedValuesS;
 	delete matchedValuesP;
@@ -110,9 +75,9 @@ void compareNoisySeedsImplementations() {
 }
 
 void compareExpandOnceImplementations() {
-	Graph* graph1 = gh::createGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph1), GraphFilesConfig::LINES_TO_SKIP);
-	Graph* graph2 = gh::createGraphFromFile(GraphFilesConfig::getGraphFileName(csr::graph2), GraphFilesConfig::LINES_TO_SKIP);
-	MatchedPairsSet* set = gh::createSeedSetFromFile(GraphFilesConfig::getNoisySeedSetName());
+	Graph* graph1 = gh::createGraphFromFile(FilesConfig::getGraphFileName(csr::graph1), FilesConfig::LINES_TO_SKIP);
+	Graph* graph2 = gh::createGraphFromFile(FilesConfig::getGraphFileName(csr::graph2), FilesConfig::LINES_TO_SKIP);
+	MatchedPairsSet* set = gh::createSeedSetFromFile(FilesConfig::getNoisySeedSetName());
 
 	std::chrono::steady_clock::time_point beginS = std::chrono::steady_clock::now();
 	alg::ExpandOnceSerial expandOnceS(graph1, graph2, threshold, seedSize, set);
