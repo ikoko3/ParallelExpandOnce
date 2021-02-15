@@ -142,6 +142,7 @@ namespace gh
 				else {
 					pairScore = it->second;
 					pairScore->incrementScore();
+					delete pair;
 				}
 
 				//pairScore->print();
@@ -186,6 +187,7 @@ namespace gh
 			}
 			else {
 				acc->second->incrementScore();
+				delete pair;
 			}
 		}
 	}

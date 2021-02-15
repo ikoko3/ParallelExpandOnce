@@ -137,7 +137,7 @@ csr::MatchedPairsSet * alg::ExpandOnceSerial::run()
 
 	delete Z;
 	delete U;
-	A0i->print();
+	//A0i->print();
 
 	NoisySeedsSerial noisySeeds(Graph1, Graph2, Threshold, A0i);
 	auto matchedValues = noisySeeds.run();

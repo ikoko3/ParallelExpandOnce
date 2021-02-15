@@ -111,7 +111,7 @@ csr::MatchedPairsSet * alg::ExpandOnceParallel::run()
 	}
 	delete Z;
 	delete U;
-	A0i->print();
+	//A0i->print();
 
 	NoisySeedsParallel noisySeeds(Graph1, Graph2, Threshold, A0i);
 	auto matchedValues = noisySeeds.run();
