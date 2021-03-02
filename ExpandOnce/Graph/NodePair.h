@@ -67,7 +67,7 @@ namespace csr {
 		void addMatchedPairs(deque<NodePair*> matchedPairs);
 		void addMatchedPairs(MatchedPairsSet* pairsSet);
 
-		deque<NodePair*> getDifference(MatchedPairsSet* pairsSet);
+		deque<NodePair*>* getDifference(MatchedPairsSet* pairsSet);
 
 		set<int>* getNodesForGraph(int graph);
 		bool graphContainsNode(int graph, int nodeId);

@@ -48,8 +48,8 @@ MatchedPairsSet* NoisySeedsSerial::run()
 	auto diff = Z->getDifference(M);
 	int counter = 0;
 	srand(time(NULL));
-	while (diff.size() > 0) {
-		auto randomPair = diff[rand() % diff.size()];
+	while (diff->size() > 0) {
+		auto randomPair = (*diff)[rand() % diff->size()];
 		Z->addNodePair(randomPair);
 
 		gh::createNeighbouringPairs(randomPair, Graph1, Graph2, pairScores);
@@ -78,6 +78,7 @@ MatchedPairsSet* NoisySeedsSerial::run()
 		if (M->getNodeSets().size() == graphSize)
 			break;
 
+		delete diff;
 		diff = Z->getDifference(M);
 	}
 

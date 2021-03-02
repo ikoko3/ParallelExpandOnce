@@ -144,9 +144,9 @@ void compareExpandeOnceImplementations() {
 int main(int argc, char* argv[]) {
 	parseArguements(argc, argv);
 
-	//compareNoisySeedsImplementations();
+	compareNoisySeedsImplementations();
 	//compareExpandOnceSerialImplementations();
-	compareExpandeOnceImplementations();
+	//compareExpandeOnceImplementations();
 	
 }
 

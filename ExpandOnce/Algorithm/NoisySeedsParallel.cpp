@@ -106,8 +106,8 @@ MatchedPairsSet* alg::NoisySeedsParallel::run()
 
 	concurrent_vector<string>* keysToRemove;
 	concurrent_vector<PairMatchingScore*>* newPairs;
-	while (diff.size() > 0) {
-		auto randomPair = diff[rand() % diff.size()];
+	while (diff->size() > 0) {
+		auto randomPair = (*diff)[rand() % diff->size()];
 		Z->addNodePair(randomPair);
 
 		createNeighbouringPairs(randomPair, Graph1, Graph2, pairScores);
@@ -148,6 +148,7 @@ MatchedPairsSet* alg::NoisySeedsParallel::run()
 		if (M->getNodeSets().size() == graphSize)
 			break;
 			
+		delete diff;
 		diff = Z->getDifference(M);
 	}
 

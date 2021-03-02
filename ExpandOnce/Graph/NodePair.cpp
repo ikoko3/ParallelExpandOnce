@@ -143,18 +143,18 @@ set<NodePair*>* GetSetFromDeque(deque<NodePair*> nodePairs) {
 	return pairsSet;
 }
 
-deque<NodePair*> MatchedPairsSet::getDifference(MatchedPairsSet * pairsSet)
+deque<NodePair*>* MatchedPairsSet::getDifference(MatchedPairsSet * pairsSet)
 {
 	map<string, NodePair*>* existingPairs = new map<string, NodePair*>();
 	for (auto pair : NodePairs) {
 		(*existingPairs)[pair->getKey()] = pair;
 	}
-	deque<NodePair*> pairsDifference;
+	deque<NodePair*>* pairsDifference = new deque<NodePair*>;
 
 	for (auto pair : pairsSet->getNodeSets()) {
 		auto it = existingPairs->find(pair->getKey());
 		if (it == existingPairs->end())
-			pairsDifference.push_back(pair);
+			pairsDifference->push_back(pair);
 	}
 
 	delete existingPairs;
