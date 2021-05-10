@@ -8,9 +8,7 @@ json_path = "C:\\Users\\john_\\Documents\\tbb_env\\"
 
 
 def run_program(threshold, seed_size,seed=int(datetime.datetime.utcnow().timestamp())):
-    params = (threshold, seed_size, seed)
-    arguments = ' '.join(str(elem) for elem in params)
-    subprocess.run([exe_path + "ExpandOnce.exe", arguments])
+    subprocess.run([exe_path + "ExpandOnce.exe", str(threshold),str(seed_size),str(seed)])
 
 def log_program_results():
     f = open(json_path + "res.json")
@@ -28,6 +26,6 @@ def run_and_log_program(threshold,seed_size,seed=int(datetime.datetime.utcnow().
     log_program_results()
 
 
-run_and_log_program(4,5)
+run_and_log_program(3,5,233)
 
 
