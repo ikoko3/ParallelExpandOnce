@@ -64,15 +64,17 @@ void compareNoisySeedsImplementations() {
 	auto sAccuracy = matchedValuesS->getAccuracy();
 	auto pAccuracy = matchedValuesP->getAccuracy();
 
-	gh::MatchedPairsResults* results = new gh::MatchedPairsResults(threshold, (int)set->getNodeSets().size(), graph1->getNodesCount(), graph1->getEdgesCount(), graph2->getEdgesCount(),
-									duration_cast<milliseconds>(endS - beginS).count(),	duration_cast<milliseconds>(endP - beginP).count(),sAccuracy,pAccuracy);
+	gh::MatchedPairsResults* results = new gh::MatchedPairsResults(threshold, (int)set->getNodeSets().size(), graph1->getNodesCount(), 
+		graph1->getEdgesCount(), graph2->getEdgesCount(), gh::getNIdent(graph1, graph2),
+		duration_cast<milliseconds>(endS - beginS).count(),	duration_cast<milliseconds>(endP - beginP).count(),sAccuracy,pAccuracy);
 	gh::saveMatchedResultsToFile(results);
 
     delete matchedValuesS;
 	delete matchedValuesP;
 	delete set;
-	delete graph1;
 	delete graph2;
+	delete graph1;
+	
 }
 
 void compareExpandOnceSerialImplementations() {
@@ -127,7 +129,8 @@ void compareExpandeOnceImplementations() {
 	auto sAccuracy = matchedValuesS->getAccuracy();
 	auto pAccuracy = matchedValuesP->getAccuracy();
 
-	gh::MatchedPairsResults* results = new gh::MatchedPairsResults(threshold, (int)set->getNodeSets().size(), graph1->getNodesCount(), graph1->getEdgesCount(), graph2->getEdgesCount(),
+	gh::MatchedPairsResults* results = new gh::MatchedPairsResults(threshold, (int)set->getNodeSets().size(), graph1->getNodesCount(),
+		graph1->getEdgesCount(), graph2->getEdgesCount(),gh::getNIdent(graph1,graph2),
 		duration_cast<milliseconds>(endS - beginS).count(), duration_cast<milliseconds>(endP - beginP).count(), sAccuracy, pAccuracy);
 	gh::saveMatchedResultsToFile(results);
 

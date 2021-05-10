@@ -253,6 +253,7 @@ namespace gh
 		resultsFile << "\"Nodes\":" << r->nodes << ",";
 		resultsFile << "\"G1Edges\":" << r->g1Edges << ",";
 		resultsFile << "\"G2Edges\":" << r->g2Edges << ",";
+		resultsFile << "\"nIdent\":" << r->nIdent << ",";
 		resultsFile << "\"Stime\":" << r->serialTime << ",\"Saccuracy\":" << r->serialAccuracy->accuraccy<< ",";
 		resultsFile << "\"Scorrect\":" << r->serialAccuracy->correct << ",\"Stotal\":" << r->serialAccuracy->total << ",";
 		resultsFile << "\"Ptime\":" << r->parallelTime<< ",\"Paccuracy\":" << r->parallelAccuracy->accuraccy << ",";
@@ -261,7 +262,13 @@ namespace gh
 		resultsFile.close();
 	}
 
-	
+	int getNIdent(Graph* g1, Graph* g2) {
+		Graph* g = g1; //graph with the least nodes
+		if (g1->getEdgesCount() > g2->getEdgesCount())
+			g = g2;
+
+		return g->getNodesCount(2);
+	}
 
 }
 

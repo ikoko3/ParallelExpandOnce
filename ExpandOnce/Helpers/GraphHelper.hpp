@@ -59,12 +59,13 @@ namespace gh
 		int nodes;
 		int g1Edges;
 		int g2Edges;
+		int nIdent;
 		SetAccuraccy* serialAccuracy;
 		SetAccuraccy* parallelAccuracy;
 		long serialTime;
 		long parallelTime;
 
-		MatchedPairsResults(int _threshold,int _seedSetSize, int _nodes, int _g1Edges, int _g2Edges
+		MatchedPairsResults(int _threshold,int _seedSetSize, int _nodes, int _g1Edges, int _g2Edges, int _nIdent
 		,long _serialTime, long _parallelTime, SetAccuraccy* _serialAccuracy, SetAccuraccy* _parallelAccuracy) 
 		{
 			threshold = _threshold;
@@ -72,6 +73,7 @@ namespace gh
 			nodes = _nodes;
 			g1Edges = _g1Edges;
 			g2Edges = _g2Edges;
+			nIdent = _nIdent;
 			serialAccuracy = _serialAccuracy;
 			parallelAccuracy = _parallelAccuracy;
 			serialTime = _serialTime;
@@ -85,4 +87,7 @@ namespace gh
 	};
 
 	void saveMatchedResultsToFile(MatchedPairsResults* results);
+
+	int getNIdent(Graph* g1, Graph* g2);
+
 }

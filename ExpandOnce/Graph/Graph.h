@@ -13,6 +13,8 @@ namespace csr {
 
 		vector<int>* getNeighboursFor(int nodeIndex);
 		int getNodesCount();
+		int getNodesCount(int edges); // Get nodes with at least n edges
+
 		int getEdgesCount();
 	private:
 		vector<Node*> nodes;

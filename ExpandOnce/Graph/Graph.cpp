@@ -28,6 +28,15 @@ int csr::Graph::getNodesCount()
 
 }
 
+int csr::Graph::getNodesCount(int n)
+{
+	int count = 0;
+	for(auto node : nodes) 
+		if (node->edges_count() >= n) count++;
+	
+	return count;
+}
+
 int csr::Graph::getEdgesCount()
 {
 	return edges.size();
