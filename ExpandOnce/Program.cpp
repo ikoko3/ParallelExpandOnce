@@ -30,9 +30,12 @@ using namespace chrono;
 //Default Values
 int threshold = 8;
 int seedSize = 15;
+int randSeed = time(NULL);
 
 void parseArguements(int argc, char* argv[]) {	
 	switch (argc) {
+	case 4:
+		randSeed = atoi(argv[3]);
 	case 3:
 		seedSize = atoi(argv[2]);
 	case 2:
@@ -52,12 +55,12 @@ void compareNoisySeedsImplementations() {
 
 	steady_clock::time_point beginS = steady_clock::now();
 	alg::NoisySeedsSerial noisySeeedsS(graph1, graph2, threshold, set);
-	auto matchedValuesS = noisySeeedsS.run();
+	auto matchedValuesS = noisySeeedsS.run(randSeed);
 	steady_clock::time_point endS = steady_clock::now();
 
 	steady_clock::time_point beginP = steady_clock::now();
 	alg::NoisySeedsParallel noisySeedsP(graph1, graph2, threshold, set);
-	auto matchedValuesP = noisySeedsP.run();
+	auto matchedValuesP = noisySeedsP.run(randSeed);
 	steady_clock::time_point endP = steady_clock::now();
 
 	
@@ -84,13 +87,13 @@ void compareExpandOnceSerialImplementations() {
 
 	std::chrono::steady_clock::time_point beginS = std::chrono::steady_clock::now();
 	alg::ExpandOnceOriginal expandOnceS(graph1, graph2, threshold, seedSize, set);
-	auto matchedValuesO = expandOnceS.run();
+	auto matchedValuesO = expandOnceS.run(randSeed);
 	std::chrono::steady_clock::time_point endS = std::chrono::steady_clock::now();
 
 
 	std::chrono::steady_clock::time_point beginP = std::chrono::steady_clock::now();
 	alg::ExpandOnceSerial expandOnceP(graph1, graph2, threshold, seedSize, set);
-	auto matchedValuesS = expandOnceP.run();
+	auto matchedValuesS = expandOnceP.run(randSeed);
 	std::chrono::steady_clock::time_point endP = std::chrono::steady_clock::now();
 
 
@@ -117,12 +120,12 @@ void compareExpandeOnceImplementations() {
 
 	steady_clock::time_point beginS = steady_clock::now();
 	alg::ExpandOnceSerial expandOnceS(graph1, graph2, threshold,seedSize, set);
-	auto matchedValuesS = expandOnceS.run();
+	auto matchedValuesS = expandOnceS.run(randSeed);
 	steady_clock::time_point endS = steady_clock::now();
 
 	steady_clock::time_point beginP = steady_clock::now();
 	alg::ExpandOnceParallel expandOnceP(graph1, graph2, threshold, seedSize, set);
-	auto matchedValuesP = expandOnceP.run();
+	auto matchedValuesP = expandOnceP.run(randSeed);
 	steady_clock::time_point endP = steady_clock::now();
 
 

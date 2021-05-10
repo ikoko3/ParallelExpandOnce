@@ -17,13 +17,13 @@ ExpandOnce::ExpandOnce(csr::Graph * graph1, csr::Graph * graph2, int threshold,i
 	this->ExpandedSeedSize = expandedSeedSize;
 }
 
-csr::MatchedPairsSet * alg::ExpandOnce::run()
+csr::MatchedPairsSet * alg::ExpandOnce::run(int seed)
 {
 	//asbtract
 	throw;
 }
 
-csr::MatchedPairsSet * alg::ExpandOnceOriginal::run()
+csr::MatchedPairsSet * alg::ExpandOnceOriginal::run(int seed)
 {
 	int threshold = Threshold;
 	cout << "Started Original expand once"<< endl;
@@ -79,12 +79,12 @@ csr::MatchedPairsSet * alg::ExpandOnceOriginal::run()
 	A0i->print();
 
 	NoisySeedsSerial noisySeeds(Graph1, Graph2, Threshold, A0i);
-	auto matchedValues = noisySeeds.run();
+	auto matchedValues = noisySeeds.run(seed);
 
 	return matchedValues;
 }
 
-csr::MatchedPairsSet * alg::ExpandOnceSerial::run()
+csr::MatchedPairsSet * alg::ExpandOnceSerial::run(int seed)
 {
 	int threshold = Threshold;
 	cout << "Started Serial expand once" << endl;
@@ -140,7 +140,7 @@ csr::MatchedPairsSet * alg::ExpandOnceSerial::run()
 	//A0i->print();
 
 	NoisySeedsSerial noisySeeds(Graph1, Graph2, Threshold, A0i);
-	auto matchedValues = noisySeeds.run();
+	auto matchedValues = noisySeeds.run(seed);
 
 	return matchedValues;
 }

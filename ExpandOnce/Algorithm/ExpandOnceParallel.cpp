@@ -44,7 +44,7 @@ public:
 };
 
 
-csr::MatchedPairsSet * alg::ExpandOnceParallel::run()
+csr::MatchedPairsSet * alg::ExpandOnceParallel::run(int seed)
 {
 	cout << "Started expand once" << endl;
 
@@ -114,7 +114,7 @@ csr::MatchedPairsSet * alg::ExpandOnceParallel::run()
 	//A0i->print();
 
 	NoisySeedsParallel noisySeeds(Graph1, Graph2, Threshold, A0i);
-	auto matchedValues = noisySeeds.run();
+	auto matchedValues = noisySeeds.run(seed);
 
 	return matchedValues;
 }

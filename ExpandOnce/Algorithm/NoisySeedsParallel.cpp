@@ -73,7 +73,7 @@ void removeUnusedNeighbouringPairs(Graph * g1, Graph * g2, PairScores* pairScore
 }
 
 
-MatchedPairsSet* alg::NoisySeedsParallel::run()
+MatchedPairsSet* alg::NoisySeedsParallel::run(int seed)
 {
 	int graphSize = Graph1->getNodesCount();
 	cout << "Starting Parallel Noisy Seeds with threshold " << Threshold
@@ -102,7 +102,7 @@ MatchedPairsSet* alg::NoisySeedsParallel::run()
 
 	auto diff = Z->getDifference(M);
 	int counter = 0;
-	srand(time(NULL));
+	srand(seed);
 
 	concurrent_vector<string>* keysToRemove;
 	concurrent_vector<PairMatchingScore*>* newPairs;

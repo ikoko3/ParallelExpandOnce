@@ -16,7 +16,7 @@ NoisySeeds::NoisySeeds(csr::Graph * graph1, csr::Graph * graph2, int threshold, 
 	Threshold = threshold;
 }
 
-MatchedPairsSet* NoisySeedsSerial::run()
+MatchedPairsSet* NoisySeedsSerial::run(int seed)
 {
 	int graphSize = Graph1->getNodesCount();
 	cout << "Starting Serial Noisy Seeds with threshold " << Threshold
@@ -47,7 +47,7 @@ MatchedPairsSet* NoisySeedsSerial::run()
 
 	auto diff = Z->getDifference(M);
 	int counter = 0;
-	srand(time(NULL));
+	srand(seed);
 	while (diff->size() > 0) {
 		auto randomPair = (*diff)[rand() % diff->size()];
 		Z->addNodePair(randomPair);
@@ -95,7 +95,7 @@ MatchedPairsSet* NoisySeedsSerial::run()
 
 
 
-MatchedPairsSet* alg::NoisySeeds::run()
+MatchedPairsSet* alg::NoisySeeds::run(int seed)
 {
 	//abstract
 	throw;
