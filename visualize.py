@@ -49,6 +49,24 @@ def print_matrix(df):
     scatter_matrix(df[['G2Edges','Stime','Saccuracy','Ptime','Paccuracy','threshold']])
     plt.show()
 
+def print_recall(df):
+    plt.scatter(df.loc[:,'threshold'],df.loc[:,'Scorrect']/df.loc[:,'nIdent'],label='Serial',color='r')
+    plt.scatter(df.loc[:,'threshold'],df.loc[:,'Pcorrect']/df.loc[:,'nIdent'],label='Parallel',color='b')
+    plt.xlabel('Threshold')
+    plt.ylabel('Recall')
+    plt.title('Noisy Seeds Recall')
+    plt.legend()
+    plt.show()
+
+def print_f1(df):
+    plt.scatter(df.loc[:,'threshold'], 2*(df.loc[:,'Saccuracy']*(df.loc[:,'Scorrect']/df.loc[:,'nIdent'])/(df.loc[:,'Saccuracy'] + (df.loc[:,'Scorrect']/df.loc[:,'nIdent']))) ,label='Serial',color='r')
+    plt.scatter(df.loc[:,'threshold'], 2*(df.loc[:,'Paccuracy']*(df.loc[:,'Pcorrect']/df.loc[:,'nIdent'])/(df.loc[:,'Paccuracy'] + (df.loc[:,'Pcorrect']/df.loc[:,'nIdent']))) ,label='Parallel',color='b')
+    plt.xlabel('Threshold')
+    plt.ylabel('F1')
+    plt.title('Noisy Seeds F1')
+    plt.legend()
+    plt.show()
+
 def calculate_acceleration(df):
     serial_time_mean = df.mean()['Stime']
     parallel_time_mean = df.mean()['Ptime']
@@ -86,13 +104,15 @@ def get_Pf1(row):
 names = ['threshold','SeedSetSize','Nodes','G1Edges','G2Edges','nIdent','Stime','Saccuracy','Scorrect','Stotal','Ptime','Paccuracy','Pcorrect','Ptotal'] 
 df = pd.read_csv(file, names=names,index_col=False)
 
+#print(df.loc['Scorrect'])
 
-selection = df.loc[:2,['Nodes','Stime','Ptime']]
+# selection = df.loc[:2,['Nodes','Stime','Ptime']]
 
-for i,row in df.iterrows():
-    print(f"SR:{get_Srecall(row)} - PR:{get_Precall(row)} - SF1:{get_Sf1(row)} - PF1:{get_Pf1(row)}")
+#for i,row in df.iterrows():
+#    print(f"SR:{get_Srecall(row)} - PR:{get_Precall(row)} - SF1:{get_Sf1(row)} - PF1:{get_Pf1(row)}")
 
 
+print_f1(df)
 #normalize_data(df)
 #print_density_time(df)
 #print_threshold_accuracy(df)
